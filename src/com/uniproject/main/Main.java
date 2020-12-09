@@ -1,0 +1,58 @@
+package com.uniproject.main;
+
+import java.awt.event.WindowEvent;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import com.uni.frame.FrameLogin;
+import com.uni.frame.SubscriptionWindowEventsClass;
+import com.uni.frame.SubscriptionWindowEventsInterface;
+import com.uniproject.jdbc.PostgreSQL;
+
+public class Main {
+
+	// Connessione al database
+	private static PostgreSQL psql;
+	
+	// Controlla se apre nuova finestra
+	public static boolean IS_OPENED_MENU = false;
+	
+	public static void main(String[] args) throws ClassNotFoundException, 
+												  InstantiationException, 
+												  IllegalAccessException, 
+												  UnsupportedLookAndFeelException {
+		
+		// Look and feel
+		for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		    if ("Nimbus".equals(info.getName())) {
+		        UIManager.setLookAndFeel(info.getClassName());
+		        break;
+		    }
+		}
+		
+		// Apertura del frame e sottoscrizione dei soli eventi necessari!
+		FrameLogin frameLogin = new FrameLogin();
+		new SubscriptionWindowEventsClass(frameLogin, new SubscriptionWindowEventsInterface() {
+			
+			@Override
+			public void openWindow(WindowEvent e) {
+				
+				// Apri connessione e passala al frame!
+				psql = new PostgreSQL("localhost", "5432", "oopbd_project", "uni_project", "oopbd2020").openConnection();
+				frameLogin.setPsql(psql);
+				
+			}
+			
+			@Override
+			public void closeWindow(WindowEvent e) {
+				if(!IS_OPENED_MENU)
+					psql.closeConnection(); // Chiudi connessione!
+			}
+			
+		});
+		frameLogin.setVisible(true);
+		
+	}
+
+}
