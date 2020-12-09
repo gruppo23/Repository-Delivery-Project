@@ -27,8 +27,9 @@ public class DaoEngine {
 	
 	/**
 	 * Query di inserimento
+	 * @param omittedIndex
 	 */
-	protected void generateQueryInsert() {
+	protected void generateQueryInsert(int ... omittedIndex) {
 		
 		try {
 
@@ -43,10 +44,18 @@ public class DaoEngine {
 			String fields  = ") VALUES (";
 			
 			// Formazione query
+			int counter = 0;
 			for(Field field : genericClass.getDeclaredFields()) {
-				field.setAccessible(true);
-				columns += field.getName() + ",";
-				fields  += field.getType().getSimpleName().equals("String") ? "'" + field.get(genericDao) + "'," : field.get(genericDao) + ",";
+				if(omittedIndex == null) {
+					continue;
+				}else {
+					if(omittedIndex[0] != counter) {
+						field.setAccessible(true);
+						columns += field.getName() + ",";
+						fields  += field.getType().getSimpleName().equals("String") ? "'" + field.get(genericDao) + "'," : field.get(genericDao) + ",";	
+					}
+				}
+				counter++;
 			}
 			
 			// Completa query

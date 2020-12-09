@@ -17,7 +17,8 @@ public class DaoRestaurant_Type extends DaoEngine implements DaoInterface<Void, 
 	
 	@Override
 	public String insert(PostgreSQL psql, Void... i) {
-		generateQueryInsert();
+		generateQueryInsert(0);
+		System.out.println(QUERY);
 		return QUERY;
 	}
 
@@ -35,8 +36,7 @@ public class DaoRestaurant_Type extends DaoEngine implements DaoInterface<Void, 
 
 	@Override
 	public List<?> select(PostgreSQL psql, Void... s) {
-		// TODO Auto-generated method stub
-		return null;
+		return generateQuerySelect().endGenerateSelect(psql, new Restaurant_Tipology());
 	}
 
 }

@@ -41,4 +41,11 @@ public class Form {
 		listValidator.add(field);
 	}
 	
+	/**
+	 * 
+	 */
+	public static void clearForm() {
+		listValidator.clear();
+	}
+	
 }

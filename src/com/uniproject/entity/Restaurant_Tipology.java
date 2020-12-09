@@ -3,23 +3,40 @@ package com.uniproject.entity;
 public class Restaurant_Tipology {
 
 	// Struttura tabella db
-	private String tipology;
-	private String description;
+	private int 	id_tipology;
+	private String 	tipology;
+	private String 	description;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTipology() {
+		return tipology;
+	}
+
+	/**
+	 * 
+	 * @param tipology
+	 */
+	public void setTipology(String tipology) {
+		this.tipology = tipology;
+	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public String getType() {
-		return tipology;
+	public int getId_tipology() {
+		return id_tipology;
 	}
-	
+
 	/**
 	 * 
-	 * @param type
+	 * @param id_tipology
 	 */
-	public void setType(String type) {
-		this.tipology = type;
+	public void setId_tipology(int id_tipology) {
+		this.id_tipology = id_tipology;
 	}
 	
 	/**
