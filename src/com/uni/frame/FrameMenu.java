@@ -26,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
+import com.uniproject.dao.DaoRestaurant;
 import com.uniproject.dao.DaoRestaurant_Type;
 import com.uniproject.dao.InterfaceSuccessErrorDao;
 import com.uniproject.entity.Restaurant;
@@ -88,8 +89,10 @@ public class FrameMenu extends JFrame{
 		// Crea menu con sotto menu
 		for(Map.Entry<String, String[]> menu : mapMenu.entrySet()) {
 			JMenu subMenu = new JMenu(menu.getKey());
+			subMenu.setFont(new Font("Tahoma", Font.BOLD, 15));
 			for(String sub : menu.getValue()) {
 				JMenuItem item = new JMenuItem(sub);
+				item.setFont(new Font("Tahoma", Font.BOLD, 15));
 				listenerMenu(item, sub, content);
 				subMenu.add(item);
 			}
@@ -148,6 +151,9 @@ public class FrameMenu extends JFrame{
 					// ---------------------
 					case "Registra ristorante":
 						
+						// Pulizia form
+						Form.clearForm();
+						
 						// Selezionare tutte le tipologie di ristoranti creati
 						List<Restaurant_Tipology> restaurantType = (List<Restaurant_Tipology>)new DaoRestaurant_Type(new Restaurant_Tipology()).select(psql);
 						
@@ -164,7 +170,7 @@ public class FrameMenu extends JFrame{
 						}
 						
 						// Interfaccia creazione ristorante
-						new PanelMenu(900, 460)
+						new PanelMenu(900, 570)
 						.build(context, new PanelMenuBuilderInterface() {
 							
 							@Override
@@ -177,7 +183,7 @@ public class FrameMenu extends JFrame{
 								
 								JTextField fieldCode = new JTextField();
 								fieldCode.setBounds(10, 60, 400, 40);
-								fieldCode.setFont(new Font("Tahom", Font.PLAIN, 20));
+								fieldCode.setFont(new Font("Tahoma", Font.PLAIN, 20));
 								fieldCode.setText("R0001");
 								fieldCode.addFocusListener(focusListener);
 								Form.addToForm(fieldCode); // Aggiungi a form
@@ -199,6 +205,7 @@ public class FrameMenu extends JFrame{
 										keyMapTipology = mapCodeValueTipology.get(comboBoxTipology.getSelectedItem());
 									}
 								});
+								comboBoxTipology.setFont(new Font("Tahoma", Font.PLAIN, 20));
 								
 								// Codice ristorante
 								JLabel lbName = new JLabel("NOME RISTORANTE (*)");
@@ -248,21 +255,38 @@ public class FrameMenu extends JFrame{
 								fieldPhone.addFocusListener(focusListener);
 								
 								// Indirizzo ristorante
-								JLabel lbAddress = new JLabel("INDIRIZZO (*)");
+								JLabel lbAddress = new JLabel("VIA/VICOLO.. (*)");
 								lbAddress.setFont(new Font("Tahoma", Font.BOLD, 20));
 								lbAddress.setBounds(10, 310, 300, 40);
 								
+								JComboBox<String> comboVia = new JComboBox<String>();
+								comboVia.addItem("Via");
+								comboVia.addItem("Vicolo");
+								comboVia.addItem("Viale");
+								comboVia.addItem("Piazza");
+								comboVia.addItem("Piazzale");
+								comboVia.addItem("Corso");
+								comboVia.addItem("Largo");
+								comboVia.addItem("Parco");
+								comboVia.setBounds(10, 360, 870, 40);
+								comboVia.setFont(new Font("Tahoma", Font.PLAIN, 20));
+								
+								// Indirizzo ristorante
+								JLabel lbAddressRest = new JLabel("INDIRIZZO (*)");
+								lbAddressRest.setFont(new Font("Tahoma", Font.BOLD, 20));
+								lbAddressRest.setBounds(10, 410, 300, 40);
+								
 								JTextField fieldAddress = new JTextField();
-								fieldAddress.setBounds(10, 360, 870, 40);
+								fieldAddress.setBounds(10, 460, 870, 40);
 								fieldAddress.setFont(new Font("Tahoma", Font.PLAIN, 20));
 								fieldAddress.setText("");
 								fieldAddress.addFocusListener(focusListener);
-								Form.addToForm(fieldAddress); // Aggiungi a form
+								Form.addToForm(fieldAddress); /// Aggiungi a form
 								
-								JButton btnAddAddress = new JButton("AGGIUNGI INDIRIZZO");
-								btnAddAddress.setBounds(10, 410, 870, 40);
-								btnAddAddress.setFont(new Font("Tahoma", Font.PLAIN, 20));
-								btnAddAddress.addActionListener(new ActionListener() {
+								JButton btnAddRestaurant = new JButton("AGGIUNGI RISTORANTE");
+								btnAddRestaurant.setBounds(10, 510, 870, 40);
+								btnAddRestaurant.setFont(new Font("Tahoma", Font.PLAIN, 20));
+								btnAddRestaurant.addActionListener(new ActionListener() {
 									
 									@Override
 									public void actionPerformed(ActionEvent e) {
@@ -288,6 +312,22 @@ public class FrameMenu extends JFrame{
 										restaurant.setCap(fieldCap.getText());
 										restaurant.setAddress(fieldAddress.getText());
 										restaurant.setPhone(fieldPhone.getText());
+										psql.insertQuery(
+											new DaoRestaurant(restaurant).insert(psql),
+											new InterfaceSuccessErrorDao() {
+												
+												@Override
+												public void ok() {
+													Form.clearForm();
+													JOptionPane.showMessageDialog(null, "Inserimento tipologia avvenuto con successo!");
+												}
+												
+												@Override
+												public void err(String e) {
+													JOptionPane.showMessageDialog(null, "Inserimento fallito!", "Errore", JOptionPane.ERROR_MESSAGE);
+												}
+											}
+										);
 										
 									}
 								});
@@ -305,8 +345,10 @@ public class FrameMenu extends JFrame{
 								panel.add(lbPhone);
 								panel.add(fieldPhone);
 								panel.add(lbAddress);
+								panel.add(comboVia);
+								panel.add(lbAddressRest);
 								panel.add(fieldAddress);
-								panel.add(btnAddAddress);
+								panel.add(btnAddRestaurant);
 							}
 						});
 						
@@ -316,6 +358,9 @@ public class FrameMenu extends JFrame{
 					// -- Creazione tipologie ristoranti --
 					// ------------------------------------
 					case "Registra tipologia ristorante":
+						
+						// Pulizia form
+						Form.clearForm();
 						
 						// Pannello tipologia ristorante
 						new PanelMenu(500, 450)

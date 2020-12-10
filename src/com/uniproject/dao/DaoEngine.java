@@ -46,8 +46,10 @@ public class DaoEngine {
 			// Formazione query
 			int counter = 0;
 			for(Field field : genericClass.getDeclaredFields()) {
-				if(omittedIndex == null) {
-					continue;
+				if(omittedIndex.length == 0) {
+					field.setAccessible(true);
+					columns += field.getName() + ",";
+					fields  += field.getType().getSimpleName().equals("String") ? "'" + field.get(genericDao) + "'," : field.get(genericDao) + ",";
 				}else {
 					if(omittedIndex[0] != counter) {
 						field.setAccessible(true);
