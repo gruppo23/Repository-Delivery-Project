@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.uniproject.jdbc.PostgreSQL;
 
-public interface DaoInterface<I, U, D, S> {
+public interface InterfaceDAO<I, U, D, S> {
 
 	/**
 	 * 

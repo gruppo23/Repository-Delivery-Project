@@ -4,13 +4,13 @@ import java.util.List;
 import com.uniproject.entity.Users;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DaoUsers extends DaoEngine implements DaoInterface<Void, Void, Void, String>{
+public class UsersDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
 
 	/**
 	 * 
 	 * @param users
 	 */
-	public DaoUsers(Users users) {
+	public UsersDAO(Users users) {
 		super(users);
 	}
 	
@@ -32,7 +32,7 @@ public class DaoUsers extends DaoEngine implements DaoInterface<Void, Void, Void
 	@Override
 	public List<?> select(PostgreSQL psql, String ... params) {
 		return generateQuerySelect()
-				.generateQueryWhere("username = '"+params[0]+"' AND password = crypt('"+params[1]+"', 'password')")
+				.generateQueryWhere("username = '"+params[0]+"' AND password = crypt('"+params[1]+"', password)")
 					.endGenerateSelect(psql, new Users());
 	}
 

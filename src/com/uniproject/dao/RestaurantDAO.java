@@ -5,13 +5,13 @@ import java.util.List;
 import com.uniproject.entity.Restaurant;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DaoRestaurant extends DaoEngine implements DaoInterface<String, String, String, String> {
+public class RestaurantDAO extends EngineDAO implements InterfaceDAO<String, String, String, String> {
 
 	/**
 	 * 
 	 * @param restaurant
 	 */
-	public DaoRestaurant(Restaurant restaurant) {
+	public RestaurantDAO(Restaurant restaurant) {
 		super(restaurant);
 	}
 	

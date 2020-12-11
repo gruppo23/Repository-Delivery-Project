@@ -5,20 +5,19 @@ import java.util.List;
 import com.uniproject.entity.Restaurant_Tipology;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DaoRestaurant_Type extends DaoEngine implements DaoInterface<Void, Void, Void, Void>{
+public class Restaurant_TypeDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Void>{
 	
 	/**
 	 * 
 	 * @param restaurant_tipology
 	 */
-	public DaoRestaurant_Type(Restaurant_Tipology restaurant_tipology) {
+	public Restaurant_TypeDAO(Restaurant_Tipology restaurant_tipology) {
 		super(restaurant_tipology);
 	}
 	
 	@Override
 	public String insert(PostgreSQL psql, Void... i) {
 		generateQueryInsert(0);
-		System.out.println(QUERY);
 		return QUERY;
 	}
 

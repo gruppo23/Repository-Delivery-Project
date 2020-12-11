@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
-import com.uniproject.dao.InterfaceSuccessErrorDao;
+import com.uniproject.dao.InterfaceSuccessErrorDAO;
 
 public class PostgreSQL {
 
@@ -97,7 +97,7 @@ public class PostgreSQL {
 	 * @param query
 	 * @return
 	 */
-	public PostgreSQL insertQuery(String query, InterfaceSuccessErrorDao interfaceSuccessErrorDao) {
+	public PostgreSQL insertQuery(String query, InterfaceSuccessErrorDAO interfaceSuccessErrorDao) {
 		
 		try {
 			Statement stm = CONNECTION_JDBC.createStatement();

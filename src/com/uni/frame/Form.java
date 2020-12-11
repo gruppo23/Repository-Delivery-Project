@@ -9,13 +9,13 @@ import javax.swing.JTextField;
 public class Form {
 
 	// JTextField da validare
-	private static List<JTextField> listValidator = new ArrayList<>();
+	private List<JTextField> listValidator = new ArrayList<>();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public static boolean validate() {
+	public boolean validate() {
 		
 		// Variabile che gestisce la validazione
 		boolean isValidated = true;
@@ -37,14 +37,42 @@ public class Form {
 	 * 
 	 * @param field
 	 */
-	public static void addToForm(JTextField field) {
+	public void addToForm(JTextField field) {
 		listValidator.add(field);
 	}
 	
 	/**
 	 * 
+	 * @return
 	 */
-	public static void clearForm() {
+	public boolean validateValueForm() {
+		boolean isValidated = true;
+		for(JTextField field : listValidator) {
+			if(field.getClientProperty("pattern") != null) {
+				if(!field.getText().matches(field.getClientProperty("pattern").toString())) {
+					field.setBackground(new Color(255, 51, 51));
+					isValidated = false;
+				}else {
+					field.setBackground(Color.white);
+				}
+			}
+		}
+		return isValidated;
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearField() {
+		for(JTextField field : listValidator) {
+			field.setText("");
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearForm() {
 		listValidator.clear();
 	}
 	

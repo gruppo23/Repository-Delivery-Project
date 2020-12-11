@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.uniproject.dao.DaoUsers;
+import com.uniproject.dao.UsersDAO;
 import com.uniproject.entity.Users;
 import com.uniproject.jdbc.PostgreSQL;
 import com.uniproject.main.Main;
@@ -55,6 +55,8 @@ public class FrameLogin extends JFrame {
 	 */
 	private JPanel buildContent() {
 		
+		Form form = new Form();
+		
 		// Listener del focus
 		FocusListener focusListener = new FocusListener() {
 			
@@ -81,7 +83,7 @@ public class FrameLogin extends JFrame {
 		JTextField fieldUser = new JTextField();
 		fieldUser.setBounds(10, 40, 200, 30);
 		fieldUser.addFocusListener(focusListener);
-		Form.addToForm(fieldUser);
+		form.addToForm(fieldUser);
 		
 		// Password
 		JLabel lbPass = new JLabel("Password (*)");
@@ -90,7 +92,7 @@ public class FrameLogin extends JFrame {
 		JPasswordField fieldPass = new JPasswordField();
 		fieldPass.setBounds(10, 110, 200, 30);
 		fieldPass.addFocusListener(focusListener);
-		Form.addToForm(fieldPass);
+		form.addToForm(fieldPass);
 		
 		// Parent da passare alle dialog
 		JFrame parent = this;
@@ -104,7 +106,7 @@ public class FrameLogin extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				// Controlla validazione!
-				if(!Form.validate()) {
+				if(!form.validate()) {
 					JOptionPane.showMessageDialog(parent, "Attenzione, validare i campi evidenziati!", "Errore", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -121,7 +123,7 @@ public class FrameLogin extends JFrame {
 				userLogin.setPassword(fieldPass.getText());
 				
 				// Dao per la selezine, controlla login!
-				List<?> result = new DaoUsers(userLogin).select(psql, userLogin.getUsername(), userLogin.getPassword());
+				List<?> result = new UsersDAO(userLogin).select(psql, userLogin.getUsername(), userLogin.getPassword());
 				if(result.size() > 0) {
 					JFrame frameMenu = new FrameMenu((Users)result.get(0), psql);
 					new SubscriptionWindowEventsClass(frameMenu, new SubscriptionWindowEventsInterface() {

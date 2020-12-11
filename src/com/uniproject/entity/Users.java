@@ -1,13 +1,29 @@
 package com.uniproject.entity;
 
+import com.uniproject.dao.AliasFieldDAO;
+import com.uniproject.dao.AliasTableDAO;
+
+@AliasTableDAO(alias = "usr", tableName = "users")
 public class Users {
 
-	// Campi utente
-	private int 	id_user;
-	private String 	name_user;
-	private String 	surname_user;
-	private String 	username;
-	private String 	password;
+	// ------------------
+	// -- Campi utente --
+	// ------------------
+	
+	@AliasFieldDAO(alias = "usr", as = "id_user")
+	private int id_user;
+	
+	@AliasFieldDAO(alias = "usr", as = "name_user")
+	private String name_user;
+	
+	@AliasFieldDAO(alias = "usr", as = "surname_user")
+	private String surname_user;
+	
+	@AliasFieldDAO(alias = "usr", as = "username")
+	private String username;
+	
+	@AliasFieldDAO(alias = "usr", as = "password")
+	private String password;
 	
 	/**
 	 * 

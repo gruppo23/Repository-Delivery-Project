@@ -1,11 +1,23 @@
 package com.uniproject.entity;
 
+import com.uniproject.dao.AliasFieldDAO;
+import com.uniproject.dao.AliasTableDAO;
+
+@AliasTableDAO(alias = "rest_type", tableName = "restaurant_tipology")
 public class Restaurant_Tipology {
 
-	// Struttura tabella db
-	private int 	id_tipology;
-	private String 	tipology;
-	private String 	description;
+	// --------------------------------
+	// -- Campi tipologia ristorante --
+	// --------------------------------
+	
+	@AliasFieldDAO(alias = "rest_type", as = "id_tipology")
+	private int id_tipology;
+	
+	@AliasFieldDAO(alias = "rest_type", as = "tipology")
+	private String tipology;
+	
+	@AliasFieldDAO(alias = "rest_type", as = "description")
+	private String description;
 
 	/**
 	 * 

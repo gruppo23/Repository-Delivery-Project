@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DaoEngine {
+public class EngineDAO {
 
 	// Query generata dal motore.
 	protected String QUERY;
@@ -21,7 +21,7 @@ public class DaoEngine {
 	 * 
 	 * @param genericDao
 	 */
-	public DaoEngine(Object genericDao) {
+	public EngineDAO(Object genericDao) {
 		this.genericDao = genericDao;
 	}
 	
@@ -75,7 +75,7 @@ public class DaoEngine {
 	 * 
 	 * @return
 	 */
-	protected DaoEngine generateQuerySelect() {
+	protected EngineDAO generateQuerySelect() {
 		
 		try {
 
@@ -88,12 +88,14 @@ public class DaoEngine {
 			// Cicla sui campo
 			for(Field field : genericClass.getDeclaredFields()) {
 				field.setAccessible(true);
-				QUERY += field.getName() + ",";
+				QUERY += ((AliasFieldDAO)field.getDeclaredAnnotations()[0]).alias() + "." + field.getName() + " AS " + ((AliasFieldDAO)field.getDeclaredAnnotations()[0]).as() + ",";
 			}
 			
 			// Splitta ultimo campo e aggiungi nome tabella
 			QUERY  = QUERY.substring(0, QUERY.length() - 1);
-			QUERY += " FROM " + genericClass.getSimpleName().toLowerCase();
+			QUERY += " FROM " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).tableName() + " AS " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).alias() + " ";
+			
+			System.out.println(QUERY);
 			
 		}catch(Exception e) {
 			System.out.println("Errore generazione query: " + e); 
@@ -107,7 +109,7 @@ public class DaoEngine {
 	 * @param clausola
 	 * @return
 	 */
-	protected DaoEngine generateQueryWhere(String clausola) {
+	protected EngineDAO generateQueryWhere(String clausola) {
 		QUERY += " WHERE " + clausola;
 		return this;
 	}
@@ -119,8 +121,8 @@ public class DaoEngine {
 	 * @param clausola
 	 * @return
 	 */
-	protected DaoEngine generateJoin(JoinTypes type, Class<?> classJoin, String clausola) {
-		QUERY += " " + type.toString() + " JOIN " + classJoin.getSimpleName() + " " + clausola;
+	protected EngineDAO generateJoin(JoinTypes type, String classJoin, String clausola) {
+		QUERY += " " + type.toString() + " JOIN " + classJoin + " " + clausola;
 		return this;
 	}
 	

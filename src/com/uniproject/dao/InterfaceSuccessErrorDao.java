@@ -1,6 +1,6 @@
 package com.uniproject.dao;
 
-public interface InterfaceSuccessErrorDao {
+public interface InterfaceSuccessErrorDAO {
 
 	/**
 	 * Successo della query

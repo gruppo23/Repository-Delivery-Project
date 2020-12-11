@@ -1,6 +1,5 @@
 package com.uni.frame;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -29,7 +28,6 @@ public class PanelMenu extends JPanel{
 		context.removeAll();
 		setBounds(0, 0, width, height);
 		setLayout(null);
-		setBorder(new EtchedBorder());
 		panelMenuBuilderInterface.attach(this);
 		context.add(this);
 		context.revalidate();

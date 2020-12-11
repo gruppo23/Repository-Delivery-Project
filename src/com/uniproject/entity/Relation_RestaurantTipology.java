@@ -3,50 +3,33 @@ package com.uniproject.entity;
 import com.uniproject.dao.AliasFieldDAO;
 import com.uniproject.dao.AliasTableDAO;
 
-@AliasTableDAO(alias = "rest", tableName = "restaurant")
-public class Restaurant {
+@AliasTableDAO(alias = "r", tableName = "restaurant")
+public class Relation_RestaurantTipology {
 
+	// ---------------------------------------------------
+	// -- Campi di relazione tra tipologia e ristorante --
+	// ---------------------------------------------------
 
-	// ----------------------
-	// -- Campi ristorante --
-	// ----------------------
-	
-	@AliasFieldDAO(alias = "rest", as = "id_restaurant")
-	private String id_restaurant;
-	
-	@AliasFieldDAO(alias = "rest", as = "name")
+	@AliasFieldDAO(alias = "r", as = "name")
 	private String name;
 	
-	@AliasFieldDAO(alias = "rest", as = "tipology")
-	private int tipology;
-	
-	@AliasFieldDAO(alias = "rest", as = "city")
+	@AliasFieldDAO(alias = "r", as = "city")
 	private String city;
 	
-	@AliasFieldDAO(alias = "rest", as = "address")
+	@AliasFieldDAO(alias = "r", as = "address")
 	private String address;
 	
-	@AliasFieldDAO(alias = "rest", as = "cap")
+	@AliasFieldDAO(alias = "r", as = "cap")
 	private String cap;
 	
-	@AliasFieldDAO(alias = "rest", as = "phone")
+	@AliasFieldDAO(alias = "r", as = "phone")
 	private String phone;
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public String getId_restaurant() {
-		return id_restaurant;
-	}
+	@AliasFieldDAO(alias = "rt", as = "description")
+	private String description;
 	
-	/**
-	 * 
-	 * @param id_restaurant
-	 */
-	public void setId_restaurant(String id_restaurant) {
-		this.id_restaurant = id_restaurant;
-	}
+	@AliasFieldDAO(alias = "rt", as = "tipology")
+	private String tipology;
 	
 	/**
 	 * 
@@ -55,7 +38,7 @@ public class Restaurant {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * 
 	 * @param name
@@ -63,23 +46,7 @@ public class Restaurant {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public int getTipology() {
-		return tipology;
-	}
-	
-	/**
-	 * 
-	 * @param tipology
-	 */
-	public void setTipology(int tipology) {
-		this.tipology = tipology;
-	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -87,7 +54,7 @@ public class Restaurant {
 	public String getCity() {
 		return city;
 	}
-	
+
 	/**
 	 * 
 	 * @param city
@@ -95,7 +62,7 @@ public class Restaurant {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -103,7 +70,7 @@ public class Restaurant {
 	public String getAddress() {
 		return address;
 	}
-	
+
 	/**
 	 * 
 	 * @param address
@@ -111,7 +78,7 @@ public class Restaurant {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -119,7 +86,7 @@ public class Restaurant {
 	public String getCap() {
 		return cap;
 	}
-	
+
 	/**
 	 * 
 	 * @param cap
@@ -127,7 +94,7 @@ public class Restaurant {
 	public void setCap(String cap) {
 		this.cap = cap;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -135,13 +102,45 @@ public class Restaurant {
 	public String getPhone() {
 		return phone;
 	}
-	
+
 	/**
 	 * 
 	 * @param phone
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * 
+	 * @param description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTipology() {
+		return tipology;
+	}
+
+	/**
+	 * 
+	 * @param tipology
+	 */
+	public void setTipology(String tipology) {
+		this.tipology = tipology;
 	}
 	
 }
