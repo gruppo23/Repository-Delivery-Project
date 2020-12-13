@@ -72,7 +72,7 @@ public class PanelRestaurantTipology implements PanelAttachInterface{
 				restaurant_Tipology.setTipology(fieldTipology.getText());
 				restaurant_Tipology.setDescription(fieldDesc.getText());
 				psql.insertQuery(
-					new Restaurant_TypeDAO(restaurant_Tipology).insert(psql),
+					new Restaurant_TypeDAO(restaurant_Tipology).insert(0, psql),
 					new InterfaceSuccessErrorDAO() {
 						
 						@Override

@@ -8,30 +8,36 @@ public interface InterfaceDAO<I, U, D, S> {
 
 	/**
 	 * 
+	 * @param delta
 	 * @param psql
 	 * @param i
+	 * @return
 	 */
-	public String insert(PostgreSQL psql, I ... i);
+	public String insert(int delta, PostgreSQL psql, I ... i);
 	
 	/**
 	 * 
+	 * @param delta
 	 * @param psql
 	 * @param u
 	 */
-	public void update(PostgreSQL psql, U ... u);
+	public String update(int delta, PostgreSQL psql, U ... u);
 	
 	/**
 	 * 
+	 * @param delta
 	 * @param psql
 	 * @param d
 	 */
-	public void delete(PostgreSQL psql, D ... d);
+	public String delete(int delta, PostgreSQL psql, D ... d);
 	
 	/**
 	 * 
+	 * @param delta
 	 * @param psql
 	 * @param s
+	 * @return
 	 */
-	public List<?> select(PostgreSQL psql, S ... s);
+	public List<?> select(int delta, PostgreSQL psql, S ... s);
 	
 }

@@ -123,7 +123,7 @@ public class FrameLogin extends JFrame {
 				userLogin.setPassword(fieldPass.getText());
 				
 				// Dao per la selezine, controlla login!
-				List<?> result = new UsersDAO(userLogin).select(psql, userLogin.getUsername(), userLogin.getPassword());
+				List<?> result = new UsersDAO(userLogin).select(0, psql, userLogin.getUsername(), userLogin.getPassword());
 				if(result.size() > 0) {
 					JFrame frameMenu = new FrameMenu((Users)result.get(0), psql);
 					new SubscriptionWindowEventsClass(frameMenu, new SubscriptionWindowEventsInterface() {

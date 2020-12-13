@@ -12,25 +12,25 @@ public class Relation_RestaurantTipologyDAO extends EngineDAO implements Interfa
 	}
 
 	@Override
-	public String insert(PostgreSQL psql, String... i) {
+	public String insert(int delta, PostgreSQL psql, String... i) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void update(PostgreSQL psql, String... u) {
+	public String update(int delta, PostgreSQL psql, String... u) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void delete(PostgreSQL psql, String... d) {
+	public String delete(int delta, PostgreSQL psql, String... d) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public List<?> select(PostgreSQL psql, String... s) {
+	public List<?> select(int delta, PostgreSQL psql, String... s) {
 		return generateQuerySelect()
 				.generateJoin(JoinTypes.INNER, "restaurant_tipology as rt", "ON r.id_tipology = rt.id_tipology")
 					.endGenerateSelect(psql, new Relation_RestaurantTipology());

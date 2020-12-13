@@ -34,7 +34,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 		Form form = new Form();
 		
 		// Selezionare tutte le tipologie di ristoranti creati
-		List<Restaurant_Tipology> restaurantType = (List<Restaurant_Tipology>)new Restaurant_TypeDAO(new Restaurant_Tipology()).select(psql);
+		List<Restaurant_Tipology> restaurantType = (List<Restaurant_Tipology>)new Restaurant_TypeDAO(new Restaurant_Tipology()).select(0, psql);
 		
 		// Controlla se il numero di tipologie è > 0
 		if(restaurantType.size() == 0) {
@@ -42,7 +42,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 			return;
 		}
 		
-		// Genera mappa di associazione valoer tipologia, codice tipologia
+		// Genera mappa di associazione valore tipologia, codice tipologia
 		Map<String, Integer> mapCodeValueTipology = new HashMap<>();
 		for(Restaurant_Tipology rt : restaurantType) {
 			mapCodeValueTipology.put(rt.getTipology(), rt.getId_tipology());
@@ -87,7 +87,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 		// Codice ristorante
 		JLabel lbName = new JLabel("NOME RISTORANTE (*)");
 		lbName.setBounds(10, 110, 300, 40);
-		lbName.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lbName.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		
 		JTextField fieldName = new JTextField();
 		fieldName.setBounds(10, 160, 400, 40);
@@ -98,7 +98,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 		
 		// Città ristorante
 		JLabel lbCity = new JLabel("CITTÀ RISTORANTE (*)");
-		lbCity.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lbCity.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lbCity.setBounds(480, 110, 300, 40);
 		
 		JTextField fieldCity = new JTextField();
@@ -206,7 +206,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 				restaurant.setAddress(comboVia.getSelectedItem() + " " + fieldAddress.getText());
 				restaurant.setPhone(fieldPhone.getText());
 				psql.insertQuery(
-					new RestaurantDAO(restaurant).insert(psql),
+					new RestaurantDAO(restaurant).insert(0, psql),
 					new InterfaceSuccessErrorDAO() {
 						
 						@Override

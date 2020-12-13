@@ -16,25 +16,25 @@ public class RestaurantDAO extends EngineDAO implements InterfaceDAO<String, Str
 	}
 	
 	@Override
-	public String insert(PostgreSQL psql, String... i) {
+	public String insert(int delta, PostgreSQL psql, String... i) {
 		generateQueryInsert();
 		return QUERY;
 	}
 
 	@Override
-	public void update(PostgreSQL psql, String... u) {
-		// TODO Auto-generated method stub
-		
+	public String update(int delta, PostgreSQL psql, String... u) {
+		generateQueryUpdate();
+		return QUERY;
 	}
 
 	@Override
-	public void delete(PostgreSQL psql, String... d) {
-		// TODO Auto-generated method stub
-		
+	public String delete(int delta, PostgreSQL psql, String... d) {
+		generateQueryDelete(-1); // Valori interi da escludere!
+		return QUERY;
 	}
 
 	@Override
-	public List<?> select(PostgreSQL psql, String... s) {
+	public List<?> select(int delta, PostgreSQL psql, String... s) {
 		// TODO Auto-generated method stub
 		return null;
 	}

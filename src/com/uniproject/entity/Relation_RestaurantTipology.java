@@ -10,6 +10,9 @@ public class Relation_RestaurantTipology {
 	// -- Campi di relazione tra tipologia e ristorante --
 	// ---------------------------------------------------
 
+	@AliasFieldDAO(alias = "r", as = "id_restaurant")
+	private String id_restaurant;
+
 	@AliasFieldDAO(alias = "r", as = "name")
 	private String name;
 	
@@ -30,6 +33,22 @@ public class Relation_RestaurantTipology {
 	
 	@AliasFieldDAO(alias = "rt", as = "tipology")
 	private String tipology;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getId_restaurant() {
+		return id_restaurant;
+	}
+
+	/**
+	 * 
+	 * @param id_restaurant
+	 */
+	public void setId_restaurant(String id_restaurant) {
+		this.id_restaurant = id_restaurant;
+	}
 	
 	/**
 	 * 

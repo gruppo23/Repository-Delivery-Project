@@ -115,6 +115,42 @@ public class PostgreSQL {
 	 * @param query
 	 * @return
 	 */
+	public PostgreSQL updateQuery(String query, InterfaceSuccessErrorDAO interfaceSuccessErrorDao) {
+		
+		try {
+			Statement stm = CONNECTION_JDBC.createStatement();
+			stm.executeUpdate(query);
+			interfaceSuccessErrorDao.ok();
+		}catch(Exception e) {
+			interfaceSuccessErrorDao.err(e.getMessage());
+		}
+		
+		return this;
+	}	
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public PostgreSQL deleteQuery(String query, InterfaceSuccessErrorDAO interfaceSuccessErrorDao) {
+		
+		try {
+			Statement stm = CONNECTION_JDBC.createStatement();
+			stm.executeUpdate(query);
+			interfaceSuccessErrorDao.ok();
+		}catch(Exception e) {
+			interfaceSuccessErrorDao.err(e.getMessage());
+		}
+		
+		return this;
+	}	
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
 	public ResultSet selectQuery(String query) {
 		
 		// Oggetto che ospita risultato query

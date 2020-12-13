@@ -5,7 +5,7 @@ import java.util.List;
 import com.uniproject.entity.Restaurant_Tipology;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class Restaurant_TypeDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Void>{
+public class Restaurant_TypeDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
 	
 	/**
 	 * 
@@ -16,26 +16,29 @@ public class Restaurant_TypeDAO extends EngineDAO implements InterfaceDAO<Void, 
 	}
 	
 	@Override
-	public String insert(PostgreSQL psql, Void... i) {
+	public String insert(int delta, PostgreSQL psql, Void... i) {
 		generateQueryInsert(0);
 		return QUERY;
 	}
 
 	@Override
-	public void update(PostgreSQL psql, Void... u) {
+	public String update(int delta, PostgreSQL psql, Void... u) {
 		// TODO Auto-generated method stub
-		
+		return null;		
 	}
 
 	@Override
-	public void delete(PostgreSQL psql, Void... d) {
+	public String delete(int delta, PostgreSQL psql, Void... d) {
 		// TODO Auto-generated method stub
-		
+		return null;		
 	}
 
 	@Override
-	public List<?> select(PostgreSQL psql, Void... s) {
-		return generateQuerySelect().endGenerateSelect(psql, new Restaurant_Tipology());
+	public List<?> select(int delta, PostgreSQL psql, String... s) {
+		if(delta == 0)
+			return generateQuerySelect().endGenerateSelect(psql, new Restaurant_Tipology());
+		else
+			return generateQuerySelect().generateQueryWhere(" rest_type.tipology =  '" + s[0] + "'").endGenerateSelect(psql, new Restaurant_Tipology());
 	}
 
 }

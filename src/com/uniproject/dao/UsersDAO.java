@@ -15,22 +15,24 @@ public class UsersDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void
 	}
 	
 	@Override
-	public String insert(PostgreSQL psql, Void ... params) {
+	public String insert(int delta, PostgreSQL psql, Void ... params) {
 		return null;
 	}
 
 	@Override
-	public void update(PostgreSQL psql, Void ... params) {
-
+	public String update(int delta, PostgreSQL psql, Void ... params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void delete(PostgreSQL psql, Void ... params) {
-		
+	public String delete(int delta, PostgreSQL psql, Void ... params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public List<?> select(PostgreSQL psql, String ... params) {
+	public List<?> select(int delta, PostgreSQL psql, String ... params) {
 		return generateQuerySelect()
 				.generateQueryWhere("username = '"+params[0]+"' AND password = crypt('"+params[1]+"', password)")
 					.endGenerateSelect(psql, new Users());

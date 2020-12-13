@@ -2,6 +2,7 @@ package com.uniproject.entity;
 
 import com.uniproject.dao.AliasFieldDAO;
 import com.uniproject.dao.AliasTableDAO;
+import com.uniproject.dao.Key;
 
 @AliasTableDAO(alias = "rest", tableName = "restaurant")
 public class Restaurant {
@@ -12,13 +13,14 @@ public class Restaurant {
 	// ----------------------
 	
 	@AliasFieldDAO(alias = "rest", as = "id_restaurant")
+	@Key()
 	private String id_restaurant;
 	
 	@AliasFieldDAO(alias = "rest", as = "name")
 	private String name;
 	
-	@AliasFieldDAO(alias = "rest", as = "tipology")
-	private int tipology;
+	@AliasFieldDAO(alias = "rest", as = "id_tipology")
+	private int id_tipology;
 	
 	@AliasFieldDAO(alias = "rest", as = "city")
 	private String city;
@@ -69,7 +71,7 @@ public class Restaurant {
 	 * @return
 	 */
 	public int getTipology() {
-		return tipology;
+		return id_tipology;
 	}
 	
 	/**
@@ -77,7 +79,7 @@ public class Restaurant {
 	 * @param tipology
 	 */
 	public void setTipology(int tipology) {
-		this.tipology = tipology;
+		this.id_tipology = tipology;
 	}
 	
 	/**

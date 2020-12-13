@@ -22,10 +22,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.text.JTextComponent;
 
+import com.uni.panels.PanelListRestaurant;
 import com.uni.panels.PanelRestaurant;
 import com.uni.panels.PanelRestaurantTipology;
 import com.uniproject.dao.RestaurantDAO;
@@ -93,10 +99,10 @@ public class FrameMenu extends JFrame{
 		// Crea menu con sotto menu
 		for(Map.Entry<String, String[]> menu : mapMenu.entrySet()) {
 			JMenu subMenu = new JMenu(menu.getKey());
-			subMenu.setFont(new Font("Tahoma", Font.BOLD, 15));
+			subMenu.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			for(String sub : menu.getValue()) {
 				JMenuItem item = new JMenuItem(sub);
-				item.setFont(new Font("Tahoma", Font.BOLD, 15));
+				item.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				listenerMenu(item, sub, content);
 				subMenu.add(item);
 			}
@@ -160,16 +166,14 @@ public class FrameMenu extends JFrame{
 						// Pulizia form
 						form.clearForm();
 						
-						// Lista ristoranti in relazione con tipologia
-						List<Relation_RestaurantTipology> listRelationRestTipology = 
-															(List<Relation_RestaurantTipology>)
-																new Relation_RestaurantTipologyDAO(new Relation_RestaurantTipology()).select(psql);
-						
-						if(listRelationRestTipology.size() > 0) {
-							for(Relation_RestaurantTipology rrt : listRelationRestTipology) {
-								String nameRestaurant = rrt.getName();
+						new PanelMenu(1000, 600)
+						.build(content, new PanelMenuBuilderInterface() {
+							
+							@Override
+							public void attach(JPanel panel) {
+								new PanelListRestaurant().attach(panel, psql, focusListener);
 							}
-						}
+						});
 						
 					break;
 				

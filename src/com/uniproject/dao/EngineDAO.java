@@ -73,6 +73,71 @@ public class EngineDAO {
 	
 	/**
 	 * 
+	 * @param omittedIndex
+	 */
+	protected void generateQueryUpdate(int ... omittedIndex) {
+		
+		try {
+			
+			// Recupera classe.
+			Class<?> genericClass = genericDao.getClass();
+			
+			// Inizia query
+			QUERY = "UPDATE " + genericClass.getSimpleName().toLowerCase() + " SET ";
+			
+			// Cicla sui campi dichiarati
+			String key = "";
+			for(Field field : genericClass.getDeclaredFields()) {
+				field.setAccessible(true);
+				if(field.getDeclaredAnnotations().length == 1)
+					QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + ",";
+				else
+					key = field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString());
+			}
+			QUERY = QUERY.substring(0, QUERY.length() - 1) + " WHERE " + key;
+			
+		}catch(Exception e) {
+			System.out.println("Errore generazione query: " + e); 
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param valueExclusion
+	 */
+	protected void generateQueryDelete(int valueExclusion) {
+	
+		try {
+			
+			// Recupera classe.
+			Class<?> genericClass = genericDao.getClass();
+			
+			// Inizia query
+			QUERY = "DELETE FROM " + genericClass.getSimpleName().toLowerCase() + " WHERE ";
+			for(Field field : genericClass.getDeclaredFields()) {
+				field.setAccessible(true);
+				if(field.get(genericDao) != null) {
+					if(!field.getType().getSimpleName().equals("int")) {
+						QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
+					}else {
+						if(field.getInt(genericDao) != valueExclusion) {
+							QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
+						}
+					}
+				}
+			}
+			QUERY = QUERY.substring(0, QUERY.length() - 4);
+			System.out.println(QUERY);
+			
+		}catch(Exception e) {
+			System.out.println("Errore generazione query: " + e); 
+		}
+		
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	protected EngineDAO generateQuerySelect() {
@@ -138,6 +203,8 @@ public class EngineDAO {
 		List<Object> generatedList = new ArrayList<>();
 		
 		try {
+			
+			System.out.println(QUERY);
 			
 			// Esegui da postgre la query
 			ResultSet rs = psql.selectQuery(QUERY);
