@@ -166,7 +166,7 @@ public class FrameMenu extends JFrame{
 						// Pulizia form
 						form.clearForm();
 						
-						new PanelMenu(1000, 600)
+						new PanelMenu(1000, 700)
 						.build(content, new PanelMenuBuilderInterface() {
 							
 							@Override

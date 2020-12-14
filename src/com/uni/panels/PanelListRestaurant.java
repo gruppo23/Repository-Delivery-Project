@@ -11,12 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import com.uni.frame.SubscriptionKey;
 import com.uni.frame.SubscriptionKeyInterface;
@@ -49,6 +54,16 @@ public class PanelListRestaurant implements PanelAttachInterface{
 	// Errore delete
 	private boolean errDel = false;
 	
+	// Righe tabella
+	private Object [][] rows;
+	
+	// Righe modificate e cancellate
+	private int modified = 0;
+	private int deleted  = 0;
+	
+	// Cancellazione e modifica in contemporanea
+	private boolean isDuplicatedOperation = false;
+	
 	@SuppressWarnings("serial")
 	@Override
 	public void attach(JPanel context, PostgreSQL psql, FocusListener focusListener) {
@@ -58,9 +73,150 @@ public class PanelListRestaurant implements PanelAttachInterface{
 											(List<Relation_RestaurantTipology>)
 												new Relation_RestaurantTipologyDAO(new Relation_RestaurantTipology()).select(0, psql);
 
-		
 		if(listRelationRestTipology.size() > 0) {
 			
+			// -------------------------
+			// -- Bottone di modifica --
+			// -------------------------
+			JButton btnUp = new JButton("Modifica");
+			btnUp.setBounds(10, 10, 200, 40);
+			btnUp.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					// Cicla su tutte le righe a true
+					isDuplicatedOperation = false;
+					for(int obj = 0; obj < rows.length; obj++) {
+						if((Boolean)tableListRestType.getModel().getValueAt(obj, 7)) {
+							
+							if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
+								isDuplicatedOperation = true;
+								break;
+							}
+							
+							// Ottieni codice tipologia
+							List<Restaurant_Tipology> restaurantType = 
+									(List<Restaurant_Tipology>)new Restaurant_TypeDAO(new Restaurant_Tipology())
+										.select(1, psql, tableListRestType.getModel().getValueAt(obj, 6).toString());
+							
+							// Ottieni il codice
+							int code = restaurantType.get(0).getId_tipology();
+							
+							Restaurant restaurant = new Restaurant();
+							restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
+							restaurant.setName(tableListRestType.getModel().getValueAt(obj, 1).toString());
+							restaurant.setCity(tableListRestType.getModel().getValueAt(obj, 2).toString());
+							restaurant.setAddress(tableListRestType.getModel().getValueAt(obj, 3).toString());
+							restaurant.setCap(tableListRestType.getModel().getValueAt(obj, 4).toString());
+							restaurant.setPhone(tableListRestType.getModel().getValueAt(obj, 5).toString());
+							restaurant.setTipology(code);
+							
+							// Genera query di update
+							psql.updateQuery(new RestaurantDAO(restaurant).update(0, psql), new InterfaceSuccessErrorDAO() {
+								
+								@Override
+								public void ok() { modified++; }
+								
+								@Override
+								public void err(String e) { 
+									JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
+									errUp = true; 
+								}
+								
+							});
+							
+							// Uscita forzata!
+							if(errUp)
+								break;
+							else 
+								errUp = false;
+							
+						}
+					}
+					
+					// Operazione duplicata!
+					if(isDuplicatedOperation) {
+						JOptionPane.showMessageDialog(null, "Attenzione, eseguire solo aggiornamento o cancellazione!", "Errore", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					// Aggiornamento andato a buon fine!
+					if(!errUp) {
+						JOptionPane.showMessageDialog(null, modified > 0 ? "Ristoranti aggiornati correttamente!" : "Attenzione, nessuna riga modificata!");
+						modified = 0;
+					}
+					
+				}
+			});
+			
+			// ---------------------------
+			// -- Bottone cancellazione --
+			// ---------------------------
+			JButton btnDel = new JButton("Elimina");
+			btnDel.setBounds(220, 10, 200, 40);
+			btnDel.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					isDuplicatedOperation = false;
+					for(int obj = 0; obj < rows.length; obj++) {
+						
+						if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
+						
+							if((Boolean)tableListRestType.getModel().getValueAt(obj, 7)) {
+								isDuplicatedOperation = true;
+								break;
+							}
+							
+							Restaurant restaurant = new Restaurant();
+							restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
+							restaurant.setName(null);
+							restaurant.setCity(null);
+							restaurant.setAddress(null);
+							restaurant.setCap(null);
+							restaurant.setPhone(null);
+							restaurant.setTipology(-1);
+							psql.deleteQuery(new RestaurantDAO(restaurant).delete(0, psql), new InterfaceSuccessErrorDAO() {
+								
+								@Override
+								public void ok() { deleted++; }
+								
+								@Override
+								public void err(String e) { 
+									JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
+									errDel = true; 
+								}
+								
+							});
+							
+							// Uscita forzata per errore
+							if(errDel)
+								break;
+							
+						}							
+					}
+					
+					// Operazione duplicata!
+					if(isDuplicatedOperation) {
+						JOptionPane.showMessageDialog(null, "Attenzione, eseguire solo aggiornamento o cancellazione!", "Errore", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					if(!errDel) {
+						JOptionPane.showMessageDialog(null, deleted > 0 ? "Cancellazione avvenuta con successo" : "Nessuna riga cancellata!");
+						context.removeAll();
+						context.repaint();
+						context.revalidate();
+						attach(context, psql, focusListener); // Ricrea istanza!
+					}else {
+						errDel = false;
+					}
+					
+				}
+			});
+					
 			// Seleziona tipologia presenti
 			List<Restaurant_Tipology> restaurantType = (List<Restaurant_Tipology>)new Restaurant_TypeDAO(new Restaurant_Tipology()).select(0, psql);
 			
@@ -89,7 +245,7 @@ public class PanelListRestaurant implements PanelAttachInterface{
 					if(!comboBoxTipology.getSelectedItem().equals("-- Tipologie --")) {
 						keyMapTipology = mapCodeValueTipology.get(comboBoxTipology.getSelectedItem());
 						dialogChooser.dispose();
-						tableListRestType.setValueAt(comboBoxTipology.getSelectedItem(), rowSelected, 7);
+						tableListRestType.setValueAt(comboBoxTipology.getSelectedItem(), rowSelected, 6);
 					}else {
 						keyMapTipology = -1;
 					}
@@ -99,11 +255,11 @@ public class PanelListRestaurant implements PanelAttachInterface{
 			
 			// Colonne tabella
 			Object [] columns = {
-				"Codice", "Nome", "Città", "Indirizzo", "CAP", "Telefono", "Descrizione", "Tipologia", ""
+				"Codice", "Nome", "Città", "Indirizzo", "CAP", "Telefono", "Tipologia", "Modifica", "Cancellazione"
 			};
 			
 			// Righe
-			Object [][] rows = new Object[listRelationRestTipology.size()][9];
+			rows = new Object[listRelationRestTipology.size()][9];
 			
 			// Cicla per le associazioni
 			int index = 0;
@@ -114,8 +270,8 @@ public class PanelListRestaurant implements PanelAttachInterface{
 				rows[index][3] = rrt.getAddress();
 				rows[index][4] = rrt.getCap();
 				rows[index][5] = rrt.getPhone();
-				rows[index][6] = rrt.getDescription();
-				rows[index][7] = rrt.getTipology();
+				rows[index][6] = rrt.getTipology();
+				rows[index][7] = Boolean.FALSE;
 				rows[index][8] = Boolean.FALSE;
 				index++;
 			}
@@ -128,141 +284,31 @@ public class PanelListRestaurant implements PanelAttachInterface{
 			    
 				@Override
 			    public boolean isCellEditable(int row, int column) {
-			        return column == 0 || column == 7 ? false : true;
+			        return column == 0 || column == 6 ? false : true;
 			    }
 				
 	            @Override
 	            public Class<?> getColumnClass(int column) {
-	            	if(column < 8)
+	            	if(column < 7)
             			return String.class;
 	            	else
 	            		return Boolean.class;
 	            }
 	            
 			};
-			tableListRestType.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			JScrollPane sp = new JScrollPane(tableListRestType);
-			sp.setBounds(10, 10, 1000, 600);
+			sp.setBounds(10, 65, 1000, 550);
 			
-			
-			// Click del componente
-			new SubscriptionKey().clickComponent(tableListRestType, new SubscriptionKeyInterface() {
-				
-				@Override
-				public void click(int keyCode) {
-					
-					// -------------------
-					// -- Aggiornamento --
-					// -------------------
-					if(keyCode == KeyEvent.VK_ENTER) {
-						
-						// Cicla su tutte le righe a true
-						for(int obj = 0; obj < rows.length; obj++) {
-							if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
-								
-								// Ottieni codice tipologia
-								List<Restaurant_Tipology> restaurantType = 
-										(List<Restaurant_Tipology>)new Restaurant_TypeDAO(new Restaurant_Tipology())
-											.select(1, psql, tableListRestType.getModel().getValueAt(obj, 7).toString());
-								
-								// Ottieni il codice
-								int code = restaurantType.get(0).getId_tipology();
-								
-								Restaurant restaurant = new Restaurant();
-								restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
-								restaurant.setName(tableListRestType.getModel().getValueAt(obj, 1).toString());
-								restaurant.setCity(tableListRestType.getModel().getValueAt(obj, 2).toString());
-								restaurant.setAddress(tableListRestType.getModel().getValueAt(obj, 3).toString());
-								restaurant.setCap(tableListRestType.getModel().getValueAt(obj, 4).toString());
-								restaurant.setPhone(tableListRestType.getModel().getValueAt(obj, 5).toString());
-								restaurant.setTipology(code);
-								
-								// Genera query di update
-								psql.updateQuery(new RestaurantDAO(restaurant).update(0, psql), new InterfaceSuccessErrorDAO() {
-									
-									@Override
-									public void ok() {}
-									
-									@Override
-									public void err(String e) { 
-										JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
-										errUp = true; 
-									}
-									
-								});
-								
-								// Uscita forzata!
-								if(errUp)
-									break;
-								else
-									errUp = false;
-								
-							}
-						}
-						
-						// Aggiornamento andato a buon fine!
-						if(!errUp)
-							JOptionPane.showMessageDialog(null, "Ristoranti aggiornati correttamente!");
-						
-					}
-					
-					// -------------------
-					// -- Cancellazione --
-					// -------------------
-					if(keyCode == KeyEvent.VK_DELETE) {
-						
-						for(int obj = 0; obj < rows.length; obj++) {
-							if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
-								Restaurant restaurant = new Restaurant();
-								restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
-								restaurant.setName(null);
-								restaurant.setCity(null);
-								restaurant.setAddress(null);
-								restaurant.setCap(null);
-								restaurant.setPhone(null);
-								restaurant.setTipology(-1);
-								psql.deleteQuery(new RestaurantDAO(restaurant).delete(0, psql), new InterfaceSuccessErrorDAO() {
-									
-									@Override
-									public void ok() {
-										
-									}
-									
-									@Override
-									public void err(String e) { 
-										JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
-										errDel = true; 
-									}
-									
-								});
-								
-								// Uscita forzata per errore
-								if(errDel)
-									break;
-								else {
-									context.removeAll();
-									attach(context, psql, focusListener); // Ricrea istanza!
-								}
-								
-							}							
-						}
-						
-						if(!errDel)
-							JOptionPane.showMessageDialog(null, "Cancellazione avvenuta con successo");
-						else
-							errDel = false;
-						
-					}
-					
-				}
-			});
+			// ---------------------------
+			// -- Mouse listener tabella -
+			// ---------------------------
 			tableListRestType.addMouseListener(new MouseAdapter() {
 			    
 				@Override
 			    public void mouseClicked(MouseEvent e) {
 					
 					// Tipologia..
-					if(tableListRestType.getSelectedColumn() == 7) {
+					if(tableListRestType.getSelectedColumn() == 6) {
 						rowSelected = tableListRestType.getSelectedRow();
 						if(dialogChooser != null) {
 							dialogChooser.dispose();
@@ -275,12 +321,14 @@ public class PanelListRestaurant implements PanelAttachInterface{
 						dialogChooser.setLocationRelativeTo(null);
 						dialogChooser.setVisible(true);
 					}
-					
+
 			    }
 			    
 			});
 			
 			context.add(sp);
+			context.add(btnUp);
+			context.add(btnDel);
 			
 		}else {
 			JOptionPane.showMessageDialog(null, "Attenzione, non ci sono ristoranti associati a tipologie in lista");
