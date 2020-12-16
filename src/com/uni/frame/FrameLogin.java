@@ -8,7 +8,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import com.uniproject.dao.UsersDAO;
 import com.uniproject.entity.Users;
 import com.uniproject.jdbc.PostgreSQL;
@@ -102,6 +100,7 @@ public class FrameLogin extends JFrame {
 		btnLogin.setBounds(10, 160, 200, 40);
 		btnLogin.addActionListener(new ActionListener() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				

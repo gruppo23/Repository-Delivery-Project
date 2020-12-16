@@ -1,6 +1,7 @@
 package com.uniproject.main;
 
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -22,6 +23,10 @@ public class Main {
 												  InstantiationException, 
 												  IllegalAccessException, 
 												  UnsupportedLookAndFeelException {
+		
+		// Se non esiste, nella home users crea una cartella di immagini 
+		if(!new File(System.getProperty("user.home") + "\\delivery_elements\\").exists())
+			new File(System.getProperty("user.home") + "\\delivery_elements\\").mkdir();
 		
 		// Look and feel
 		for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

@@ -118,12 +118,22 @@ public class EngineDAO {
 			for(Field field : genericClass.getDeclaredFields()) {
 				field.setAccessible(true);
 				if(field.get(genericDao) != null) {
-					if(!field.getType().getSimpleName().equals("int")) {
+					if(!field.getType().getSimpleName().equals("int") && !field.getType().getSimpleName().equals("double")) {
 						QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
 					}else {
-						if(field.getInt(genericDao) != valueExclusion) {
+						
+						// Set del valore
+						int value;
+						if(field.getType().getSimpleName().equals("double"))
+							value = (int)field.getDouble(genericDao);
+						else
+							value = field.getInt(genericDao);
+						
+						// Controllo valore!
+						if(value != valueExclusion) {
 							QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
 						}
+						
 					}
 				}
 			}
@@ -160,8 +170,6 @@ public class EngineDAO {
 			QUERY  = QUERY.substring(0, QUERY.length() - 1);
 			QUERY += " FROM " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).tableName() + " AS " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).alias() + " ";
 			
-			System.out.println(QUERY);
-			
 		}catch(Exception e) {
 			System.out.println("Errore generazione query: " + e); 
 		}
@@ -176,6 +184,17 @@ public class EngineDAO {
 	 */
 	protected EngineDAO generateQueryWhere(String clausola) {
 		QUERY += " WHERE " + clausola;
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param fields
+	 * @param type
+	 * @return
+	 */
+	protected EngineDAO generateQueryOrderBy(String fields, String type) {
+		QUERY += " ORDER BY " + fields + " " + type;
 		return this;
 	}
 	

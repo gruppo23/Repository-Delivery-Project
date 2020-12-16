@@ -9,38 +9,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.text.JTextComponent;
-
 import com.uni.panels.PanelListRestaurant;
+import com.uni.panels.PanelProducts;
 import com.uni.panels.PanelRestaurant;
 import com.uni.panels.PanelRestaurantTipology;
-import com.uniproject.dao.RestaurantDAO;
-import com.uniproject.dao.Restaurant_TypeDAO;
-import com.uniproject.dao.InterfaceSuccessErrorDAO;
-import com.uniproject.dao.Relation_RestaurantTipologyDAO;
-import com.uniproject.entity.Relation_RestaurantTipology;
-import com.uniproject.entity.Restaurant;
-import com.uniproject.entity.Restaurant_Tipology;
 import com.uniproject.entity.Users;
 import com.uniproject.jdbc.PostgreSQL;
 
@@ -157,6 +138,26 @@ public class FrameMenu extends JFrame{
 				
 				// Switch testo menu
 				switch(text) {
+				
+					// ----------------------------------
+					// -- Registrazione di un prodotto --
+					// ----------------------------------
+					case "Registra prodotto":
+						
+						// Pulizia form
+						form.clearForm();
+						
+						new PanelMenu(1000, 700)
+						.build(content, new PanelMenuBuilderInterface() {
+							
+							@Override
+							public void attach(JPanel panel) {
+								new PanelProducts().attach(panel, psql, focusListener);
+							}	
+							
+						});
+						
+					break;
 				
 					// ----------------------
 					// -- Lista ristorante --

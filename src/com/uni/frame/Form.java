@@ -56,6 +56,18 @@ public class Form {
 					field.setBackground(Color.white);
 				}
 			}
+			if(field.getClientProperty("tipology") != null) {
+				if(field.getClientProperty("tipology").equals("numeric")) {
+					try {
+						Double.parseDouble(field.getText().replace(",", "."));
+					}catch(Exception e) {
+						field.setBackground(new Color(255, 51, 51));
+						isValidated = false;
+					}
+				}else {
+					field.setBackground(Color.white);
+				}
+			}
 		}
 		return isValidated;
 	}

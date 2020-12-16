@@ -1,7 +1,6 @@
 package com.uni.frame;
 
 import javax.swing.JPanel;
-import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
 public class PanelMenu extends JPanel{

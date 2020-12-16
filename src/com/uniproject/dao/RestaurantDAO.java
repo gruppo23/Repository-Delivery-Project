@@ -35,8 +35,7 @@ public class RestaurantDAO extends EngineDAO implements InterfaceDAO<String, Str
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
-		// TODO Auto-generated method stub
-		return null;
+		return generateQuerySelect().endGenerateSelect(psql, new Restaurant());
 	}
 
 }
