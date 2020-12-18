@@ -1,5 +1,6 @@
 package com.uni.panels;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -166,6 +167,7 @@ public class PanelRestaurant implements PanelAttachInterface{
 		
 		JButton btnAddRestaurant = new JButton("AGGIUNGI RISTORANTE");
 		btnAddRestaurant.setBounds(10, 510, 870, 40);
+		btnAddRestaurant.setBackground(Color.orange);
 		btnAddRestaurant.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnAddRestaurant.addActionListener(new ActionListener() {
 			
@@ -187,12 +189,6 @@ public class PanelRestaurant implements PanelAttachInterface{
 				// Scelta tipologia
 				if(keyMapTipology == -1) {
 					JOptionPane.showMessageDialog(null, "Attenzione, scegliere una tipologia!", "Errore", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				// Controlla che ci sia connessione al db
-				if(psql.isClosedConnection()) {
-					JOptionPane.showMessageDialog(null, "Attenzione, connessione al db assente!", "Errore", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				

@@ -75,7 +75,7 @@ public class EngineDAO {
 	 * 
 	 * @param omittedIndex
 	 */
-	protected void generateQueryUpdate(int ... omittedIndex) {
+	protected void generateQueryUpdate(int [] validIndexSet, int [] validIndexWhere) {
 		
 		try {
 			
@@ -85,16 +85,27 @@ public class EngineDAO {
 			// Inizia query
 			QUERY = "UPDATE " + genericClass.getSimpleName().toLowerCase() + " SET ";
 			
-			// Cicla sui campi dichiarati
-			String key = "";
-			for(Field field : genericClass.getDeclaredFields()) {
-				field.setAccessible(true);
-				if(field.getDeclaredAnnotations().length == 1)
-					QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + ",";
-				else
-					key = field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString());
+			// Ottieni i campi
+			Field[] fields = genericClass.getDeclaredFields();
+			
+			// Cicla sui campi dichiarati per il set
+			String set = "";
+			for(int index : validIndexSet) {
+				fields[index].setAccessible(true);
+				set += fields[index].getName() + " = " + (fields[index].getType().getSimpleName().toString().equals("String") ? "'" + fields[index].get(genericDao) + "'" : fields[index].get(genericDao).toString()) + ",";
 			}
-			QUERY = QUERY.substring(0, QUERY.length() - 1) + " WHERE " + key;
+			set = set.substring(0, set.length() - 1);
+			
+			// Cicla per il where
+			String where = " WHERE ";
+			for(int index : validIndexWhere) {
+				fields[index].setAccessible(true);
+				where += fields[index].getName() + " = " + (fields[index].getType().getSimpleName().toString().equals("String") ? "'" + fields[index].get(genericDao) + "'" : fields[index].get(genericDao).toString()) + " AND";
+			}
+			where = where.substring(0, where.length() - 3);
+			
+			// Completa query
+			QUERY += set + where;
 			
 		}catch(Exception e) {
 			System.out.println("Errore generazione query: " + e); 
@@ -104,9 +115,9 @@ public class EngineDAO {
 	
 	/**
 	 * 
-	 * @param valueExclusion
+	 * @param validIndex
 	 */
-	protected void generateQueryDelete(int valueExclusion) {
+	protected void generateQueryDelete(int [] validIndex) {
 	
 		try {
 			
@@ -115,30 +126,14 @@ public class EngineDAO {
 			
 			// Inizia query
 			QUERY = "DELETE FROM " + genericClass.getSimpleName().toLowerCase() + " WHERE ";
-			for(Field field : genericClass.getDeclaredFields()) {
-				field.setAccessible(true);
-				if(field.get(genericDao) != null) {
-					if(!field.getType().getSimpleName().equals("int") && !field.getType().getSimpleName().equals("double")) {
-						QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
-					}else {
-						
-						// Set del valore
-						int value;
-						if(field.getType().getSimpleName().equals("double"))
-							value = (int)field.getDouble(genericDao);
-						else
-							value = field.getInt(genericDao);
-						
-						// Controllo valore!
-						if(value != valueExclusion) {
-							QUERY += field.getName().toLowerCase() + " = " + (field.getType().getSimpleName().toString().equals("String") ? "'" + field.get(genericDao) + "'" : field.get(genericDao).toString()) + " AND ";
-						}
-						
-					}
-				}
+			
+			for(int index : validIndex) {
+				Field [] fields = genericClass.getDeclaredFields();
+				fields[index].setAccessible(true);
+				QUERY += fields[index].getName() + " = "  + (fields[index].getType().getSimpleName().toString().equals("String") ? "'" + fields[index].get(genericDao) + "'" : fields[index].get(genericDao).toString());
+				QUERY += " AND";
 			}
-			QUERY = QUERY.substring(0, QUERY.length() - 4);
-			System.out.println(QUERY);
+			QUERY = QUERY.substring(0, QUERY.length() - 3);
 			
 		}catch(Exception e) {
 			System.out.println("Errore generazione query: " + e); 
@@ -148,9 +143,10 @@ public class EngineDAO {
 	
 	/**
 	 * 
+	 * @param isDistinct
 	 * @return
 	 */
-	protected EngineDAO generateQuerySelect() {
+	protected EngineDAO generateQuerySelect(boolean ... isDistinct) {
 		
 		try {
 
@@ -159,7 +155,11 @@ public class EngineDAO {
 			
 			// Parte iniziale Query select
 			QUERY = "SELECT ";
-			
+			if(isDistinct.length > 0) {
+				if(isDistinct[0])
+					QUERY += "DISTINCT ";
+			}
+				
 			// Cicla sui campo
 			for(Field field : genericClass.getDeclaredFields()) {
 				field.setAccessible(true);
@@ -184,6 +184,16 @@ public class EngineDAO {
 	 */
 	protected EngineDAO generateQueryWhere(String clausola) {
 		QUERY += " WHERE " + clausola;
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param clausola
+	 * @return
+	 */
+	protected EngineDAO generateQueryGroupBy(String clausola) {
+		QUERY += " GROUP BY " + clausola;
 		return this;
 	}
 	
@@ -222,8 +232,6 @@ public class EngineDAO {
 		List<Object> generatedList = new ArrayList<>();
 		
 		try {
-			
-			System.out.println(QUERY);
 			
 			// Esegui da postgre la query
 			ResultSet rs = psql.selectQuery(QUERY);

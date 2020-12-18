@@ -27,6 +27,12 @@ public class Relation_RestaurantProduct {
 	@AliasFieldDAO(alias = "rp", as = "id_relation")
 	private int id_relation;
 	
+	@AliasFieldDAO(alias = "rp", as = "id_product")
+	private int id_product;
+
+	@AliasFieldDAO(alias = "rp", as = "id_restaurant")
+	private String id_restaurant;
+	
 	@AliasFieldDAO(alias = "rp", as = "quantity")
 	private int quantity;
 	
@@ -53,16 +59,16 @@ public class Relation_RestaurantProduct {
 	 * 
 	 * @return
 	 */
-	public String getName() {
+	public String getName_product() {
 		return name_product;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name_product
 	 */
-	public void setName(String name) {
-		this.name_product = name;
+	public void setName_product(String name_product) {
+		this.name_product = name_product;
 	}
 
 	/**
@@ -93,7 +99,7 @@ public class Relation_RestaurantProduct {
 	 * 
 	 * @param vat_number
 	 */
-	public void setVat_number(int vat_number) {
+	public void setVat_number(double vat_number) {
 		this.vat_number = vat_number;
 	}
 
@@ -149,6 +155,38 @@ public class Relation_RestaurantProduct {
 	 * 
 	 * @return
 	 */
+	public int getId_product() {
+		return id_product;
+	}
+
+	/**
+	 * 
+	 * @param id_product
+	 */
+	public void setId_product(int id_product) {
+		this.id_product = id_product;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getId_restaurant() {
+		return id_restaurant;
+	}
+
+	/**
+	 * 
+	 * @param id_restaurant
+	 */
+	public void setId_restaurant(String id_restaurant) {
+		this.id_restaurant = id_restaurant;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
 	public int getQuantity() {
 		return quantity;
 	}
@@ -165,16 +203,17 @@ public class Relation_RestaurantProduct {
 	 * 
 	 * @return
 	 */
-	public String getRestaurant_name() {
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * 
-	 * @param restaurant_name
+	 * @param name
 	 */
-	public void setRestaurant_name(String restaurant_name) {
-		this.name = restaurant_name;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
+
+
 }

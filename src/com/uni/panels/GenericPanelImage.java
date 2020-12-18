@@ -61,6 +61,8 @@ public class GenericPanelImage extends JPanel{
 			}
 			
 			g.drawImage(imgToPaint, 0, 0, (int)newWidth, (int)newHeight, null);
+		}else {
+			
 		}
 			
 		// Richiamo ricorsivo!

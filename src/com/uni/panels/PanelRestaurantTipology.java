@@ -1,5 +1,6 @@
 package com.uni.panels;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +33,7 @@ public class PanelRestaurantTipology implements PanelAttachInterface{
 		
 		JTextField fieldTipology = new JTextField();
 		fieldTipology.setBounds(10, 60, 400, 40);
-		fieldTipology.setFont(new Font("Tahom", Font.PLAIN, 20));
+		fieldTipology.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		fieldTipology.addFocusListener(focusListener);
 		form.addToForm(fieldTipology); // Aggiungi a form
 		
@@ -49,6 +50,7 @@ public class PanelRestaurantTipology implements PanelAttachInterface{
 		// Bottone creazione
 		JButton btnCreate = new JButton("Crea tipologia");
 		btnCreate.setBounds(10, 370, 450, 40);
+		btnCreate.setBackground(Color.orange);
 		btnCreate.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnCreate.addActionListener(new ActionListener() {
 			

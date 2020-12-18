@@ -1,5 +1,6 @@
 package com.uni.panels;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,6 +53,9 @@ public class PanelListRestaurant implements PanelAttachInterface{
 	private int modified = 0;
 	private int deleted  = 0;
 	
+	// Id dei prodotti associati
+	private List<Integer> idProds;
+	
 	// Cancellazione e modifica in contemporanea
 	private boolean isDuplicatedOperation = false;
 	
@@ -71,6 +75,7 @@ public class PanelListRestaurant implements PanelAttachInterface{
 			// -------------------------
 			JButton btnUp = new JButton("Modifica");
 			btnUp.setBounds(10, 10, 200, 40);
+			btnUp.setBackground(Color.orange);
 			btnUp.addActionListener(new ActionListener() {
 				
 				@Override
@@ -146,63 +151,73 @@ public class PanelListRestaurant implements PanelAttachInterface{
 			// ---------------------------
 			JButton btnDel = new JButton("Elimina");
 			btnDel.setBounds(220, 10, 200, 40);
+			btnDel.setBackground(Color.orange);
 			btnDel.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					
-					isDuplicatedOperation = false;
-					for(int obj = 0; obj < rows.length; obj++) {
-						
-						if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
-						
-							if((Boolean)tableListRestType.getModel().getValueAt(obj, 7)) {
-								isDuplicatedOperation = true;
-								break;
-							}
+					// Avvertenza alla cancellazione!
+					int confirm = JOptionPane.showConfirmDialog(null, "Attenzione, eliminando un ristorante considera che:					     " + 
+																	   "\n1)i prodotti associati esclusivamente al ristorante saranno eliminati; " + 
+														               "\n2)i prodotti associati a più ristoranti non saranno eliminati.\n       " + 
+																	   "Sicuro di voler cancellare?".trim());
+					
+					// Conferma è 0!
+					if(confirm == 0) {
+						isDuplicatedOperation = false;
+						for(int obj = 0; obj < rows.length; obj++) {
 							
-							Restaurant restaurant = new Restaurant();
-							restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
-							restaurant.setName(null);
-							restaurant.setCity(null);
-							restaurant.setAddress(null);
-							restaurant.setCap(null);
-							restaurant.setPhone(null);
-							restaurant.setTipology(-1);
-							psql.deleteQuery(new RestaurantDAO(restaurant).delete(0, psql), new InterfaceSuccessErrorDAO() {
-								
-								@Override
-								public void ok() { deleted++; }
-								
-								@Override
-								public void err(String e) { 
-									JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
-									errDel = true; 
+							if((Boolean)tableListRestType.getModel().getValueAt(obj, 8)) {
+							
+								if((Boolean)tableListRestType.getModel().getValueAt(obj, 7)) {
+									isDuplicatedOperation = true;
+									break;
 								}
 								
-							});
-							
-							// Uscita forzata per errore
-							if(errDel)
-								break;
-							
-						}							
-					}
-					
-					// Operazione duplicata!
-					if(isDuplicatedOperation) {
-						JOptionPane.showMessageDialog(null, "Attenzione, eseguire solo aggiornamento o cancellazione!", "Errore", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					
-					if(!errDel) {
-						JOptionPane.showMessageDialog(null, deleted > 0 ? "Cancellazione avvenuta con successo" : "Nessuna riga cancellata!");
-						context.removeAll();
-						context.repaint();
-						context.revalidate();
-						attach(context, psql, focusListener); // Ricrea istanza!
-					}else {
-						errDel = false;
+								Restaurant restaurant = new Restaurant();
+								restaurant.setId_restaurant(tableListRestType.getModel().getValueAt(obj, 0).toString());
+								restaurant.setName(null);
+								restaurant.setCity(null);
+								restaurant.setAddress(null);
+								restaurant.setCap(null);
+								restaurant.setPhone(null);
+								restaurant.setTipology(-1);
+								psql.deleteQuery(new RestaurantDAO(restaurant).delete(0, psql), new InterfaceSuccessErrorDAO() {
+									
+									@Override
+									public void ok() { deleted++; }
+									
+									@Override
+									public void err(String e) { 
+										JOptionPane.showMessageDialog(null, "Si è verificato un errore: " + e, "Errore", JOptionPane.ERROR_MESSAGE);
+										errDel = true; 
+									}
+									
+								});
+								
+								// Uscita forzata per errore
+								if(errDel)
+									break;
+								
+							}							
+						}
+						
+						// Operazione duplicata!
+						if(isDuplicatedOperation) {
+							JOptionPane.showMessageDialog(null, "Attenzione, eseguire solo aggiornamento o cancellazione!", "Errore", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						if(!errDel) {
+							JOptionPane.showMessageDialog(null, deleted > 0 ? "Cancellazione avvenuta con successo" : "Nessuna riga cancellata!");
+							context.removeAll();
+							context.repaint();
+							context.revalidate();
+							attach(context, psql, focusListener); // Ricrea istanza!
+						}else {
+							errDel = false;
+						}	
 					}
 					
 				}

@@ -6,16 +6,16 @@ import com.uniproject.dao.AliasTableDAO;
 @AliasTableDAO(tableName = "restaurant_product", alias = "rp")
 public class Restaurant_Product {
 
-	@AliasFieldDAO(alias = "rt", as = "id_relation")
+	@AliasFieldDAO(alias = "rp", as = "id_relation")
 	private int id_relation;
 	
-	@AliasFieldDAO(alias = "rt", as = "id_product")
+	@AliasFieldDAO(alias = "rp", as = "id_product")
 	private int id_product;
 	
-	@AliasFieldDAO(alias = "rt", as = "id_restaurant")
+	@AliasFieldDAO(alias = "rp", as = "id_restaurant")
 	private String id_restaurant;
 	
-	@AliasFieldDAO(alias = "rt", as = "quantity")
+	@AliasFieldDAO(alias = "rp", as = "quantity")
 	private int quantity;
 
 	/**

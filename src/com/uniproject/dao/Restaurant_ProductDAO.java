@@ -5,7 +5,7 @@ import java.util.List;
 import com.uniproject.entity.Restaurant_Product;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class Restaurant_ProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Void> {
+public class Restaurant_ProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Integer> {
 
 	public Restaurant_ProductDAO(Restaurant_Product restaurant_Product) {
 		super(restaurant_Product);
@@ -30,9 +30,8 @@ public class Restaurant_ProductDAO extends EngineDAO implements InterfaceDAO<Voi
 	}
 
 	@Override
-	public List<?> select(int delta, PostgreSQL psql, Void... s) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<?> select(int delta, PostgreSQL psql, Integer... s) {
+		return generateQuerySelect().generateQueryWhere(" rp.id_product =  " + s[0]).endGenerateSelect(psql, new Restaurant_Product());
 	}
 
 }

@@ -30,17 +30,32 @@ public class ProductDAO extends EngineDAO implements InterfaceDAO<String, Void, 
 
 	@Override
 	public String delete(int delta, PostgreSQL psql, Integer... d) {	
-		generateQueryDelete(-1);
+		generateQueryDelete(new int[] {0});
 		return QUERY;
 	}
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
+		
+		Product product = new Product();
 		List<Product> prod = null;
-		if(delta == 0)
-			 prod = (List<Product>)generateQuerySelect().endGenerateSelect(psql, new Product());
-		else
-			 prod = (List<Product>)generateQuerySelect().generateQueryOrderBy("id", "desc").endGenerateSelect(psql, new Product());
+		
+		switch(delta) {
+			
+			case 0:
+				prod = (List<Product>)generateQuerySelect().endGenerateSelect(psql, product);
+			break;
+			
+			case 1:
+				prod = (List<Product>)generateQuerySelect().generateQueryOrderBy("id", "desc").endGenerateSelect(psql, product);
+			break;
+			
+			case 2:
+				prod = (List<Product>)generateQuerySelect().generateQueryWhere("id = " + s[0]).endGenerateSelect(psql, product);
+			break;
+			
+		}
+
 		return prod;
 	}
 

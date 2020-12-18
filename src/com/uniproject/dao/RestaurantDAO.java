@@ -23,13 +23,13 @@ public class RestaurantDAO extends EngineDAO implements InterfaceDAO<String, Str
 
 	@Override
 	public String update(int delta, PostgreSQL psql, String... u) {
-		generateQueryUpdate();
+		generateQueryUpdate(new int[] {1, 2, 3, 4, 5, 6}, new int[] {0});
 		return QUERY;
 	}
 
 	@Override
 	public String delete(int delta, PostgreSQL psql, String... d) {
-		generateQueryDelete(-1); // Valori interi da escludere!
+		generateQueryDelete(new int[] {0}); // Valori interi da escludere!
 		return QUERY;
 	}
 

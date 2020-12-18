@@ -57,16 +57,31 @@ public class Form {
 				}
 			}
 			if(field.getClientProperty("tipology") != null) {
-				if(field.getClientProperty("tipology").equals("numeric")) {
-					try {
-						Double.parseDouble(field.getText().replace(",", "."));
-					}catch(Exception e) {
-						field.setBackground(new Color(255, 51, 51));
-						isValidated = false;
-					}
-				}else {
-					field.setBackground(Color.white);
+				
+				switch(field.getClientProperty("tipology").toString()) {
+					
+					// DOUBLE
+					case "double":
+						try {
+							Double.parseDouble(field.getText().replace(",", "."));
+						}catch(Exception e) {
+							field.setBackground(new Color(255, 51, 51));
+							isValidated = false;
+						}
+					break;
+					
+					// INTEGER
+					case "integer":
+						try {
+							Integer.parseInt(field.getText());
+						}catch(Exception e) {
+							field.setBackground(new Color(255, 51, 51));
+							isValidated = false;
+						}
+					break;
+					
 				}
+				
 			}
 		}
 		return isValidated;
