@@ -26,8 +26,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
+import com.uni.panels.PanelAddAllergy;
+import com.uni.panels.PanelCustomer;
+import com.uni.panels.PanelCustomerList;
 import com.uni.panels.PanelDriver;
 import com.uni.panels.PanelDriverList;
+import com.uni.panels.PanelListProduct;
 import com.uni.panels.PanelListRestaurant;
 import com.uni.panels.PanelProducts;
 import com.uni.panels.PanelRestaurant;
@@ -54,7 +58,6 @@ public class FrameMenu extends JFrame{
 		super("Menù");
 		this.users = users;
 		this.psql  = psql;
-		setResizable(false);
 		setSize(new Dimension(1280, 720));
 		setExtendedState(MAXIMIZED_BOTH);
 		setDefaultCloseOperation(3);
@@ -87,7 +90,7 @@ public class FrameMenu extends JFrame{
 		mapMenu.put("Prodotti",   		new String[] { "Registra prodotto",           "Lista prodotti",   		"Registra allergie alimenti"  		  });
 		mapMenu.put("Clienti",    		new String[] { "Registra cliente",            "Lista clienti",    		"Registra allergie cliente" 		  });
 		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",    		                                      });
-		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    		"Registra mezzi di trasporto drivers" });
+		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    											  });
 		mapMenu.put("Statistiche",    	new String[] { "Statistiche ristoranti",      "Statistiche clienti",    "Statistiche drivers" 				  });
 
 		// Crea menu con sotto menu
@@ -105,6 +108,25 @@ public class FrameMenu extends JFrame{
 		
 		// Aggiunta del menu al frame
 		setJMenuBar(menuBar);
+		
+		// JPanel immagine
+		try {
+			
+			// Carica immagine..
+			ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResourceAsStream(SingletonImage.getInstance().getImage(0)).readAllBytes());
+			imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(300, 236, Image.SCALE_SMOOTH));
+			JLabel labelBackImage = new JLabel(imageIcon);
+			labelBackImage.setBounds(
+					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 320, 
+					(int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 320, 
+					300, 
+					236
+			);
+			add(labelBackImage);
+			
+		}catch(Exception e) {
+			
+		}
 		
 		return content;
 	}
@@ -152,6 +174,86 @@ public class FrameMenu extends JFrame{
 				
 				// Switch testo menu
 				switch(text) {
+				
+	                // ---------------------
+	                // ------ ALLERGIE------
+	                // ---------------------
+	                case "Registra allergie alimenti":
+	                   
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia creazione ristorante
+	                    new PanelMenu(900, 570)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelAddAllergy().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+	                   
+	                break;
+	               
+	                // ---------------------
+	                // --- Lista prodotti---
+	                // ---------------------
+	                case "Lista prodotti":
+	                   
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia creazione ristorante
+	                    new PanelMenu(1250, 570)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelListProduct().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+	                   
+	                break;
+				
+					// -------------------
+					// -- Lista clienti --
+					// -------------------
+					case "Lista clienti":
+						
+						// Pulizia form
+						form.clearForm();
+						
+						new PanelMenu(1000, 700)
+						.build(content, new PanelMenuBuilderInterface() {
+							
+							@Override
+							public void attach(JPanel panel) {
+								new PanelCustomerList().attach(panel, psql, focusListener);
+							}
+						});
+						
+					break;
+				
+					// ---------------------------
+					// -- Registrazione cliente --
+					// ---------------------------
+					case "Registra cliente":
+					
+						// Pulizia form
+						form.clearForm();
+						
+						new PanelMenu(1000, 700)
+						.build(content, new PanelMenuBuilderInterface() {
+							
+							@Override
+							public void attach(JPanel panel) {
+								new PanelCustomer().attach(panel, psql, focusListener);
+							}
+						});
+						
+					break;
 				
 					// -------------------
 					// -- Lista drivers --

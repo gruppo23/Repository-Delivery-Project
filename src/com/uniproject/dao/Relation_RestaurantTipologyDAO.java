@@ -31,9 +31,17 @@ public class Relation_RestaurantTipologyDAO extends EngineDAO implements Interfa
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
-		return generateQuerySelect()
-				.generateJoin(JoinTypes.INNER, "restaurant_tipology as rt", "ON r.id_tipology = rt.id_tipology")
-					.endGenerateSelect(psql, new Relation_RestaurantTipology());
+		if(delta == 0) {
+			return generateQuerySelect()
+					.generateJoin(JoinTypes.INNER, "restaurant_tipology as rt", "ON r.id_tipology = rt.id_tipology")
+						.endGenerateSelect(psql, new Relation_RestaurantTipology());
+		}else {
+			return generateQuerySelect()
+					.generateJoin(JoinTypes.INNER, "restaurant_tipology as rt", "ON r.id_tipology = rt.id_tipology")
+						.generateQueryWhere("")
+							.generateLike()
+								.endGenerateSelect(psql, new Relation_RestaurantTipology());																			
+		}
 	}
 
 }

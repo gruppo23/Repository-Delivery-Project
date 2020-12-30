@@ -1,12 +1,15 @@
 package com.uniproject.jdbc;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Types;
 
 import javax.swing.JOptionPane;
 
+import com.sun.jdi.Type;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
 
 public class PostgreSQL {
@@ -164,6 +167,34 @@ public class PostgreSQL {
 		}
 		
 		return rs;
+	}
+	
+	/**
+	 * 
+	 * @param procedureName
+	 * @param parameters
+	 * @return
+	 */
+	public CallableStatement callProcedure(String procedureName, String ... parameters) {
+		
+		CallableStatement proc = null;
+		try {
+			
+			String paramsList = "";
+			if(parameters.length > 0) {
+				for(String p : parameters) {
+					paramsList += p + ",";
+				}
+				paramsList = paramsList.substring(0, paramsList.length() - 1);
+			}
+			
+			proc = CONNECTION_JDBC.prepareCall("CALL " + procedureName + "(" + paramsList + ")");
+			
+		}catch(Exception e) {
+			
+		}
+		
+		return proc;
 	}
 	
 }

@@ -27,6 +27,12 @@ public class Drivers {
 	@AliasFieldDAO(alias = "dr", as = "phone")
 	private String phone;
 
+	@AliasFieldDAO(alias = "dr", as = "gender")
+	private String gender;
+	
+	@AliasFieldDAO(alias = "dr", as = "data_n")
+	private String data_n;
+	
 	/**
 	 * 
 	 * @return
@@ -125,6 +131,14 @@ public class Drivers {
 
 	/**
 	 * 
+	 * @param phone
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public String getPhone() {
@@ -133,10 +147,34 @@ public class Drivers {
 
 	/**
 	 * 
-	 * @param phone
+	 * @param gender
 	 */
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * 
+	 * @param data_n
+	 */
+	public void setData_n(String data_n) {
+		this.data_n = data_n;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getData_n() {
+		return data_n;
 	}
 	
 }

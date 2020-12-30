@@ -1,7 +1,5 @@
 package com.uni.frame;
 
-import java.io.InputStream;
-
 public class SingletonImage {
 
 	// Immagini caricate

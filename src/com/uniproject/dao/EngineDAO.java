@@ -222,6 +222,26 @@ public class EngineDAO {
 	
 	/**
 	 * 
+	 * @param modelClass
+	 * @return
+	 */
+	protected EngineDAO generateLike() {
+		
+		try {
+			for(Field field : genericDao.getClass().getDeclaredFields()) {
+				field.setAccessible(true);
+				QUERY += "(" + field.getName() + "::text LIKE '%"+ field.get(genericDao) +"%') OR";
+			}
+			QUERY = QUERY.substring(0, QUERY.length() - 2);
+		}catch(Exception e) {
+			JOptionPane.showMessageDialog(null, "Si è verificato un errore in fase di selezione da parte del motore DaoEngine.java: " + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		return this;
+	}
+	
+	/**
+	 * 
 	 * @param psql
 	 * @param modelClass
 	 * @return
@@ -232,6 +252,8 @@ public class EngineDAO {
 		List<Object> generatedList = new ArrayList<>();
 		
 		try {
+			
+			System.out.println(QUERY);
 			
 			// Esegui da postgre la query
 			ResultSet rs = psql.selectQuery(QUERY);

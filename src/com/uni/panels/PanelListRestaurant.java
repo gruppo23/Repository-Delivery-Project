@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
 import com.uniproject.dao.Relation_RestaurantTipologyDAO;
 import com.uniproject.dao.RestaurantDAO;
@@ -62,7 +63,7 @@ public class PanelListRestaurant implements PanelAttachInterface{
 	@SuppressWarnings("serial")
 	@Override
 	public void attach(JPanel context, PostgreSQL psql, FocusListener focusListener) {
-	
+		
 		// Lista ristoranti in relazione con tipologia
 		List<Relation_RestaurantTipology> listRelationRestTipology = 
 											(List<Relation_RestaurantTipology>)
@@ -282,11 +283,13 @@ public class PanelListRestaurant implements PanelAttachInterface{
 				index++;
 			}
 			
+			DefaultTableModel defaultTableModel = new DefaultTableModel(rows, columns);
+			
 			// ----------------------------------------------------------------------
 			// -- 1) Il primo metodo implementato rappresenta le celle editabili
 			// -- 2) Il secondo il check della eventuale selezione
 			// ----------------------------------------------------------------------
-			tableListRestType = new JTable(rows, columns) {
+			tableListRestType = new JTable(defaultTableModel) {
 			    
 				@Override
 			    public boolean isCellEditable(int row, int column) {
@@ -303,7 +306,7 @@ public class PanelListRestaurant implements PanelAttachInterface{
 	            
 			};
 			JScrollPane sp = new JScrollPane(tableListRestType);
-			sp.setBounds(10, 65, 1000, 550);
+			sp.setBounds(10, 120, 1000, 550);
 			
 			// ---------------------------
 			// -- Mouse listener tabella -
@@ -330,6 +333,48 @@ public class PanelListRestaurant implements PanelAttachInterface{
 
 			    }
 			    
+			});
+			
+			GenericResearch gr = new GenericResearch(new Relation_RestaurantTipology());
+			gr.appendElement(context, 10, 70, new IGet() {
+				
+				@Override
+				public void put(String value) {
+					
+					Relation_RestaurantTipology rrtResearch = null;
+					try {
+						rrtResearch = (Relation_RestaurantTipology) gr.invokeSet(value);
+					}catch(Exception e) {
+						JOptionPane.showMessageDialog(null, "Si è verificato un errore durante la ricerca: " + e.getMessage() , "Errore", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					// Lista ristoranti in relazione con tipologia
+					List<Relation_RestaurantTipology> listRelationRestTipology = 
+														(List<Relation_RestaurantTipology>)
+															new Relation_RestaurantTipologyDAO(rrtResearch)
+																.select(1, psql);
+					// Righe
+					rows = new Object[listRelationRestTipology.size()][9];
+					
+					// Cicla per le associazioni
+					int index = 0;
+					for(Relation_RestaurantTipology rrt : listRelationRestTipology) {
+						rows[index][0] = rrt.getId_restaurant();
+						rows[index][1] = rrt.getName();
+						rows[index][2] = rrt.getCity();
+						rows[index][3] = rrt.getAddress();
+						rows[index][4] = rrt.getCap();
+						rows[index][5] = rrt.getPhone();
+						rows[index][6] = rrt.getTipology();
+						rows[index][7] = Boolean.FALSE;
+						rows[index][8] = Boolean.FALSE;
+						index++;
+					}
+					
+					gr.getNewModel(tableListRestType, columns, rows);
+				}
+				
 			});
 			
 			context.add(sp);

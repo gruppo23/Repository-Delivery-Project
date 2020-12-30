@@ -4,22 +4,22 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import com.uniproject.dao.DriversDAO;
+import javax.swing.table.DefaultTableModel;
+import com.uniproject.dao.CustomerDAO;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
-import com.uniproject.entity.Drivers;
+import com.uniproject.entity.Customer;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class PanelDriverList implements PanelAttachInterface{
+public class PanelCustomerList implements PanelAttachInterface{
 	
 	// Tabella
-	private JTable tableDrivers;
+	private JTable tableCustomer;
 	
 	// Errori update
 	private boolean errUp = false;
@@ -40,10 +40,10 @@ public class PanelDriverList implements PanelAttachInterface{
 	@SuppressWarnings("serial")
 	@Override
 	public void attach(JPanel context, PostgreSQL psql, FocusListener focusListener) {
-	
-		List<Drivers> drivers = (List<Drivers>)new DriversDAO(new Drivers()).select(0, psql);
+		
+		List<Customer> customers = (List<Customer>)new CustomerDAO(new Customer()).select(0, psql);
 
-		if(drivers.size() > 0) {
+		if(customers.size() > 0) {
 			
 			// -------------------------
 			// -- Bottone di modifica --
@@ -59,24 +59,25 @@ public class PanelDriverList implements PanelAttachInterface{
 					// Cicla su tutte le righe a true
 					isDuplicatedOperation = false;
 					for(int obj = 0; obj < rows.length; obj++) {
-						if((Boolean)tableDrivers.getModel().getValueAt(obj, 7)) {
+						if((Boolean)tableCustomer.getModel().getValueAt(obj, 8)) {
 							
-							if((Boolean)tableDrivers.getModel().getValueAt(obj, 8)) {
+							if((Boolean)tableCustomer.getModel().getValueAt(obj, 9)) {
 								isDuplicatedOperation = true;
 								break;
 							}
-														
-							Drivers driver = new Drivers();
-							driver.setFiscal_code(tableDrivers.getModel().getValueAt(obj, 0).toString());
-							driver.setName(tableDrivers.getModel().getValueAt(obj, 1).toString());
-							driver.setSurname(tableDrivers.getModel().getValueAt(obj, 2).toString());
-							driver.setCity(tableDrivers.getModel().getValueAt(obj, 3).toString());
-							driver.setCap(tableDrivers.getModel().getValueAt(obj, 4).toString());
-							driver.setPhone(tableDrivers.getModel().getValueAt(obj, 6).toString());
-							driver.setAddress(tableDrivers.getModel().getValueAt(obj, 5).toString());
+							
+							Customer customer = new Customer();
+							customer.setFiscal_code(tableCustomer.getModel().getValueAt(obj, 0).toString());
+							customer.setName(tableCustomer.getModel().getValueAt(obj, 1).toString());
+							customer.setSurname(tableCustomer.getModel().getValueAt(obj, 2).toString());
+							customer.setDate(tableCustomer.getModel().getValueAt(obj, 3).toString());
+							customer.setCity(tableCustomer.getModel().getValueAt(obj, 4).toString());
+							customer.setCap(tableCustomer.getModel().getValueAt(obj, 5).toString());
+							customer.setPhone(tableCustomer.getModel().getValueAt(obj, 7).toString());
+							customer.setAddress(tableCustomer.getModel().getValueAt(obj, 6).toString());
 							
 							// Genera query di update
-							psql.updateQuery(new DriversDAO(driver).update(0, psql), new InterfaceSuccessErrorDAO() {
+							psql.updateQuery(new CustomerDAO(customer).update(0, psql), new InterfaceSuccessErrorDAO() {
 								
 								@Override
 								public void ok() { modified++; }
@@ -106,7 +107,7 @@ public class PanelDriverList implements PanelAttachInterface{
 					
 					// Aggiornamento andato a buon fine!
 					if(!errUp) {
-						JOptionPane.showMessageDialog(null, modified > 0 ? "Driver/s aggiornato correttamente!" : "Attenzione, nessuna riga modificata!");
+						JOptionPane.showMessageDialog(null, modified > 0 ? "Cliente/i aggiornato/i correttamente!" : "Attenzione, nessuna riga modificata!");
 						modified = 0;
 					}
 					
@@ -127,22 +128,23 @@ public class PanelDriverList implements PanelAttachInterface{
 					isDuplicatedOperation = false;
 					for(int obj = 0; obj < rows.length; obj++) {
 						
-						if((Boolean)tableDrivers.getModel().getValueAt(obj, 8)) {
+						if((Boolean)tableCustomer.getModel().getValueAt(obj, 9)) {
 						
-							if((Boolean)tableDrivers.getModel().getValueAt(obj, 7)) {
+							if((Boolean)tableCustomer.getModel().getValueAt(obj, 8)) {
 								isDuplicatedOperation = true;
 								break;
 							}
 							
-							Drivers driver = new Drivers();
-							driver.setFiscal_code(tableDrivers.getModel().getValueAt(obj, 0).toString());
-							driver.setName(null);
-							driver.setSurname(null);
-							driver.setCity(null);
-							driver.setCap(null);
-							driver.setPhone(null);
-							driver.setAddress(null);
-							psql.deleteQuery(new DriversDAO(driver).delete(0, psql), new InterfaceSuccessErrorDAO() {
+							Customer customer = new Customer();
+							customer.setFiscal_code(tableCustomer.getModel().getValueAt(obj, 0).toString());
+							customer.setName(null);
+							customer.setSurname(null);
+							customer.setCity(null);
+							customer.setCap(null);
+							customer.setPhone(null);
+							customer.setAddress(null);
+							customer.setDate(null);
+							psql.deleteQuery(new CustomerDAO(customer).delete(0, psql), new InterfaceSuccessErrorDAO() {
 								
 								@Override
 								public void ok() { deleted++; }
@@ -184,32 +186,36 @@ public class PanelDriverList implements PanelAttachInterface{
 			
 			// Colonne tabella
 			Object [] columns = {
-				"Codice Fiscale", "Nome", "Cognome", "Città", "CAP", "Indirizzo", "Telefono", "Modifica", "Cancellazione"
+				"Codice Fiscale", "Nome", "Cognome", "Data", "Città", "CAP", "Indirizzo", "Telefono", "Modifica", "Cancellazione"
 			};
 			
 			// Righe
-			rows = new Object[drivers.size()][9];
+			rows = new Object[customers.size()][10];
 			
 			// Cicla per le associazioni
 			int index = 0;
-			for(Drivers dr : drivers) {
-				rows[index][0] = dr.getFiscal_code();
-				rows[index][1] = dr.getName();
-				rows[index][2] = dr.getSurname();
-				rows[index][3] = dr.getCity();
-				rows[index][4] = dr.getCap();
-				rows[index][5] = dr.getAddress();
-				rows[index][6] = dr.getPhone();
-				rows[index][7] = Boolean.FALSE;
+			for(Customer cr : customers) {
+				rows[index][0] = cr.getFiscal_code();
+				rows[index][1] = cr.getName();
+				rows[index][2] = cr.getSurname();
+				rows[index][3] = cr.getDate();
+				rows[index][4] = cr.getCity();
+				rows[index][5] = cr.getCap();
+				rows[index][6] = cr.getAddress();
+				rows[index][7] = cr.getPhone();
 				rows[index][8] = Boolean.FALSE;
+				rows[index][9] = Boolean.FALSE;
 				index++;
 			}
+			
+			// Modello della tabella
+			DefaultTableModel defaultTableModel = new DefaultTableModel(rows, columns);
 			
 			// ----------------------------------------------------------------------
 			// -- 1) Il primo metodo implementato rappresenta le celle editabili
 			// -- 2) Il secondo il check della eventuale selezione
 			// ----------------------------------------------------------------------
-			tableDrivers = new JTable(rows, columns) {
+			tableCustomer = new JTable(defaultTableModel) {
 			    
 				@Override
 			    public boolean isCellEditable(int row, int column) {
@@ -218,51 +224,54 @@ public class PanelDriverList implements PanelAttachInterface{
 				
 	            @Override
 	            public Class<?> getColumnClass(int column) {
-	            	if(column < 7)
+	            	if(column < 8)
             			return String.class;
 	            	else
 	            		return Boolean.class;
 	            }
 	            
 			};
-			JScrollPane sp = new JScrollPane(tableDrivers);
+			JScrollPane sp = new JScrollPane(tableCustomer);
 			sp.setBounds(10, 115, 1000, 550);
 			
-			GenericResearch gr = new GenericResearch(new Drivers());
+			// Ricerca
+			GenericResearch gr = new GenericResearch(new Customer());
 			gr.appendElement(context, 10, 65, new IGet() {
 				
 				@Override
-				public void put(String text) {
+				public void put(String value) {
 					
-					Drivers driver = null;
+					Customer customer = null;
 					try {
-						driver = (Drivers) gr.invokeSet(text);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						customer = (Customer) gr.invokeSet(value);
+					}catch(Exception e) {
 						JOptionPane.showMessageDialog(null, "Si è verificato un errore durante la ricerca: " + e.getMessage() , "Errore", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					
-					List<Drivers> drivers = (List<Drivers>)new DriversDAO(driver).select(1, psql);
-
+					// Lista clienti
+					List<Customer> customersList = (List<Customer>)new CustomerDAO(customer).select(1, psql);
+					
 					// Righe
-					rows = new Object[drivers.size()][9];
+					rows = new Object[customersList.size()][10];
 					
 					// Cicla per le associazioni
 					int index = 0;
-					for(Drivers dr : drivers) {
-						rows[index][0] = dr.getFiscal_code();
-						rows[index][1] = dr.getName();
-						rows[index][2] = dr.getSurname();
-						rows[index][3] = dr.getCity();
-						rows[index][4] = dr.getCap();
-						rows[index][5] = dr.getAddress();
-						rows[index][6] = dr.getPhone();
-						rows[index][7] = Boolean.FALSE;
+					for(Customer cr : customersList) {
+						rows[index][0] = cr.getFiscal_code();
+						rows[index][1] = cr.getName();
+						rows[index][2] = cr.getSurname();
+						rows[index][3] = cr.getDate();
+						rows[index][4] = cr.getCity();
+						rows[index][5] = cr.getCap();
+						rows[index][6] = cr.getAddress();
+						rows[index][7] = cr.getPhone();
 						rows[index][8] = Boolean.FALSE;
+						rows[index][9] = Boolean.FALSE;
 						index++;
 					}
 					
-					gr.getNewModel(tableDrivers, columns, rows);
+					gr.getNewModel(tableCustomer, columns, rows);
 					
 				}
 			});
@@ -272,7 +281,7 @@ public class PanelDriverList implements PanelAttachInterface{
 			context.add(btnDel);
 			
 		}else {
-			JOptionPane.showMessageDialog(null, "Attenzione, non ci sono driver!");
+			JOptionPane.showMessageDialog(null, "Attenzione, non ci sono clienti!");
 		}
 		
 	}

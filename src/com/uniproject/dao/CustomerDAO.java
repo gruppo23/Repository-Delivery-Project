@@ -1,18 +1,17 @@
 package com.uniproject.dao;
 
 import java.util.List;
-
-import com.uniproject.entity.Drivers;
+import com.uniproject.entity.Customer;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DriversDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String> {
+public class CustomerDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String> {
 
 	/**
 	 * 
-	 * @param driver
+	 * @param customer
 	 */
-	public DriversDAO(Drivers driver) {
-		super(driver);
+	public CustomerDAO(Customer customer) {
+		super(customer);
 	}
 	
 	@Override
@@ -23,7 +22,7 @@ public class DriversDAO extends EngineDAO implements InterfaceDAO<Void, Void, Vo
 
 	@Override
 	public String update(int delta, PostgreSQL psql, Void... u) {
-		generateQueryUpdate(new int[] {1, 2, 3, 4, 5, 6}, new int[] {0});
+		generateQueryUpdate(new int[] {1, 2, 3, 4, 5, 6, 7}, new int[] {0});
 		System.out.println(QUERY);
 		return QUERY;
 	}
@@ -36,17 +35,10 @@ public class DriversDAO extends EngineDAO implements InterfaceDAO<Void, Void, Vo
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
-		List<Drivers> drivers = null;
-		
 		if(delta == 0)
-			drivers = (List<Drivers>)generateQuerySelect().endGenerateSelect(psql, new Drivers());
+			return generateQuerySelect().endGenerateSelect(psql, new Customer());
 		else
-			drivers = (List<Drivers>)generateQuerySelect()
-						.generateQueryWhere("")
-							.generateLike()
-								.endGenerateSelect(psql, new Drivers());
-		
-		return drivers;
+			return generateQuerySelect().generateQueryWhere("").generateLike().endGenerateSelect(psql, new Customer());
 	}
 
 }
