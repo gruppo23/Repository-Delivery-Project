@@ -29,6 +29,9 @@ public class Customer {
 	
 	@AliasFieldDAO(alias = "cs", as = "phone")
 	private String phone;
+	
+	@AliasFieldDAO(alias = "cs", as = "gender")
+	private String gender;
 
 	/**
 	 * 
@@ -114,6 +117,23 @@ public class Customer {
 	 * 
 	 * @return
 	 */
+	
+	/**
+	 * 
+	 * @param gender
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGender() {
+		return gender;
+	}
+
 	public String getCity() {
 		return city;
 	}

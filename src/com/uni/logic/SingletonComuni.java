@@ -59,8 +59,8 @@ public class SingletonComuni {
 			
 			String line = br.readLine();
 			while(line != null) {
-				comuneCodiceResidenziale.put(line.split(";")[1], line.split(";")[6]);
-				comuneCap.put(line.split(";")[1], line.split(";")[5]);
+				comuneCodiceResidenziale.put(line.split(";")[0], line.split(";")[2]);
+				comuneCap.put(line.split(";")[0], line.split(";")[1]);
 				line = br.readLine();
 			}
 			

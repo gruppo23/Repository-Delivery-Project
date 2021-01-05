@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class Form {
@@ -35,10 +36,10 @@ public class Form {
 	
 	/**
 	 * 
-	 * @param field
+	 * @param txtCognome
 	 */
-	public void addToForm(JTextField field) {
-		listValidator.add(field);
+	public void addToForm(JTextField txtCognome) {
+		listValidator.add(txtCognome);
 	}
 	
 	/**

@@ -152,6 +152,7 @@ public class FiscalCode {
 	public String getFiscalCode() {
 		
 		String fiscal_code 		= "";
+		String consonants       = "bcdfghjklmnpqrstvwxyz";
 		String vocals 			= "aeiou";
 
 		name 	= name.toLowerCase();
@@ -161,7 +162,7 @@ public class FiscalCode {
 		String subSurnameConsonant = "";
 		
 		for(char nc : surname.toCharArray()) {
-			if(!vocals.contains(String.valueOf(nc))) {
+			if(consonants.contains(String.valueOf(nc))) {
 				subSurnameConsonant += String.valueOf(nc);
 			}
 		}
@@ -192,7 +193,7 @@ public class FiscalCode {
 		String subNameConsonant = "";
 		
 		for(char nc : name.toCharArray()) {
-			if(!vocals.contains(String.valueOf(nc))) {
+			if(consonants.contains(String.valueOf(nc))) {
 				subNameConsonant += String.valueOf(nc);
 			}
 		}
@@ -219,13 +220,13 @@ public class FiscalCode {
 			}
 		}
 		
-		fiscal_code += data_n.split("-")[2].substring(2, 4);
-		fiscal_code += mapMonth.get(data_n.split("-")[1]);
+		fiscal_code += data_n.split("-|/")[2].substring(2, 4);
+		fiscal_code += mapMonth.get(data_n.split("-|/")[1]);
 		
 		if(gender.toLowerCase().equals("m")) {
-			fiscal_code += data_n.split("-")[0];
+			fiscal_code += data_n.split("-|/")[0];
 		}else {
-			fiscal_code += String.valueOf(Integer.parseInt(data_n.split("-")[0]) + 40);
+			fiscal_code += String.valueOf(Integer.parseInt(data_n.split("-|/")[0]) + 40);
 		}
 		
 		fiscal_code += SingletonComuni.getInstance().getComuneCodiceResidenziale().get(comune);

@@ -4,16 +4,22 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.uniproject.dao.AllergyCustomer_RelationDAO;
 import com.uniproject.dao.CustomerDAO;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
 import com.uniproject.entity.Customer;
+import com.uniproject.entity.Relation_AllergyCustomerDescription;
 import com.uniproject.jdbc.PostgreSQL;
 
 public class PanelCustomerList implements PanelAttachInterface{
@@ -219,7 +225,7 @@ public class PanelCustomerList implements PanelAttachInterface{
 			    
 				@Override
 			    public boolean isCellEditable(int row, int column) {
-			        return column == 0 ? false : true;
+			        return column == 0 || column == 1 || column == 2 || column == 3 || column == 4 || column == 5 ? false : true;
 			    }
 				
 	            @Override
@@ -233,6 +239,48 @@ public class PanelCustomerList implements PanelAttachInterface{
 			};
 			JScrollPane sp = new JScrollPane(tableCustomer);
 			sp.setBounds(10, 115, 1000, 550);
+			
+			tableCustomer.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(tableCustomer.getSelectedColumn() == 0) {
+						String fiscal_code = (String) tableCustomer.getValueAt(tableCustomer.getSelectedRow(), 0);
+						List<Relation_AllergyCustomerDescription> relationAllergyCustomer = 
+								(List<Relation_AllergyCustomerDescription>)new AllergyCustomer_RelationDAO(new Relation_AllergyCustomerDescription()).select(0, psql, fiscal_code);
+
+						if(relationAllergyCustomer.size() == 1) {
+							if(relationAllergyCustomer.get(0).getName_allergen() == null) {
+								JOptionPane.showMessageDialog(null, "Il cliente non presenta allergie");
+								return;
+							}
+						}
+						
+						String [] columns = {
+								"Allergie"
+							};
+						String [][] rows = new String[relationAllergyCustomer.size()][1];
+						
+						int index = 0;
+						for(Relation_AllergyCustomerDescription rad : relationAllergyCustomer) {
+							rows[index][0] = rad.getName_allergen();
+							index++;
+						}
+						
+						DefaultTableModel dtm = new DefaultTableModel(rows, columns);
+						JTable tableAllergen = new JTable(dtm);
+						JScrollPane scrollPane = new JScrollPane(tableAllergen);
+						
+						JDialog dialogAllergen = new JDialog();
+						dialogAllergen.setLocationRelativeTo(null);
+						dialogAllergen.add(scrollPane);
+						dialogAllergen.pack();
+						dialogAllergen.setVisible(true);
+						
+					}
+				}
+				
+			});
 			
 			// Ricerca
 			GenericResearch gr = new GenericResearch(new Customer());

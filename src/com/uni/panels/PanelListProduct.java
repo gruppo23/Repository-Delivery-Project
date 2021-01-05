@@ -59,7 +59,12 @@ public class PanelListProduct implements PanelAttachInterface{
 				index++;
 			}
 			
-			tableListAllergyProduct = new JTable(rows, columns);
+			tableListAllergyProduct = new JTable(rows, columns) {
+				public boolean isCellEditable(int row, int column) {
+			        return column == 0 || column == 1 || column == 2 || column == 3 || column == 4 ? false : true;
+			    }
+				
+			};
 			
 			JScrollPane sp = new JScrollPane(tableListAllergyProduct);
 			sp.setBounds(10, 10, 1250, 550);

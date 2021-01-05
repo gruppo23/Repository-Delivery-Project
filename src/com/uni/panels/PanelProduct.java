@@ -43,7 +43,7 @@ interface IScroll{
 	void doneOperation();
 }
 
-public class PanelProducts implements PanelAttachInterface {
+public class PanelProduct implements PanelAttachInterface {
 
 	// Resulset della select
 	int indexProds = -1;

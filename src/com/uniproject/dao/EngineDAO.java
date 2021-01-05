@@ -65,6 +65,8 @@ public class EngineDAO {
 			fields  = fields.substring(0, fields.length() - 1);
 			QUERY  += columns + fields + ")";
 			
+			System.out.println(QUERY);
+			
 		}catch(Exception e) { 
 			System.out.println("Errore generazione query: " + e); 
 		}

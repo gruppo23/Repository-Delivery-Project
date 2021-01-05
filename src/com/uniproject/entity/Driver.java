@@ -3,8 +3,8 @@ package com.uniproject.entity;
 import com.uniproject.dao.AliasFieldDAO;
 import com.uniproject.dao.AliasTableDAO;
 
-@AliasTableDAO(tableName = "drivers", alias = "dr")
-public class Drivers {
+@AliasTableDAO(tableName = "driver", alias = "dr")
+public class Driver {
 
 	@AliasFieldDAO(alias = "dr", as = "fiscal_code")
 	private String fiscal_code;
@@ -21,9 +21,9 @@ public class Drivers {
 	@AliasFieldDAO(alias = "dr", as = "cap")
 	private String cap;
 	
-	@AliasFieldDAO(alias = "dr", as = "address")
-	private String address;
-	
+	@AliasFieldDAO(alias = "dr", as = "transport")
+	private String transport;
+		
 	@AliasFieldDAO(alias = "dr", as = "phone")
 	private String phone;
 
@@ -117,18 +117,15 @@ public class Drivers {
 	 * 
 	 * @return
 	 */
-	public String getAddress() {
-		return address;
+
+	public String getTransport() {
+		return transport;
 	}
 
-	/**
-	 * 
-	 * @param address
-	 */
-	public void setAddress(String address) {
-		this.address = address;
+	public void setTransport(String transport) {
+		this.transport = transport;
 	}
-
+	
 	/**
 	 * 
 	 * @param phone

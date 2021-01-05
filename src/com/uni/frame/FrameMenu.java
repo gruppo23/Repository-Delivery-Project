@@ -27,13 +27,14 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 import com.uni.panels.PanelAddAllergy;
+import com.uni.panels.PanelAddAllergyToCustomer;
 import com.uni.panels.PanelCustomer;
 import com.uni.panels.PanelCustomerList;
 import com.uni.panels.PanelDriver;
 import com.uni.panels.PanelDriverList;
 import com.uni.panels.PanelListProduct;
 import com.uni.panels.PanelListRestaurant;
-import com.uni.panels.PanelProducts;
+import com.uni.panels.PanelProduct;
 import com.uni.panels.PanelRestaurant;
 import com.uni.panels.PanelRestaurantTipology;
 import com.uniproject.entity.Users;
@@ -86,12 +87,12 @@ public class FrameMenu extends JFrame{
 		
 		// Menù
 		Map<String, String[]> mapMenu = new HashMap<>();
-		mapMenu.put("Ristoranti", 		new String[] { "Registra ristorante",         "Lista ristoranti", 		"Registra tipologia ristorante" 	  });
-		mapMenu.put("Prodotti",   		new String[] { "Registra prodotto",           "Lista prodotti",   		"Registra allergie alimenti"  		  });
-		mapMenu.put("Clienti",    		new String[] { "Registra cliente",            "Lista clienti",    		"Registra allergie cliente" 		  });
-		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",    		                                      });
-		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    											  });
-		mapMenu.put("Statistiche",    	new String[] { "Statistiche ristoranti",      "Statistiche clienti",    "Statistiche drivers" 				  });
+		mapMenu.put("Ristoranti", 		new String[] { "Registra ristorante",         "Lista ristoranti", 		"Registra tipologia ristorante" 	                        });
+		mapMenu.put("Prodotti",   		new String[] { "Registra prodotto",           "Lista prodotti",   		"Registra allergie alimenti"  		                        });
+		mapMenu.put("Clienti",    		new String[] { "Registra cliente",            "Lista clienti",    		"Registra allergie cliente",     "Allergie dei clienti" 	});
+		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",    		                                                            });
+		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    											                        });
+		mapMenu.put("Statistiche",    	new String[] { "Statistiche ristoranti",      "Statistiche clienti",    "Statistiche drivers" 				                        });
 
 		// Crea menu con sotto menu
 		for(Map.Entry<String, String[]> menu : mapMenu.entrySet()) {
@@ -190,6 +191,27 @@ public class FrameMenu extends JFrame{
 	                        @Override
 	                        public void attach(JPanel panel) {
 	                            new PanelAddAllergy().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+	                   
+	                break;
+	                
+	                // ---------------------------------
+	                // ----AGGIUNGI ALLERGIA CLIENTE----
+	                // ---------------------------------
+	                case "Registra allergie cliente":
+	                   
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia creazione ristorante
+	                    new PanelMenu(900, 570)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelAddAllergyToCustomer().attach(panel, psql, focusListener);
 	                        }
 	                       
 	                    });
@@ -305,7 +327,7 @@ public class FrameMenu extends JFrame{
 							
 							@Override
 							public void attach(JPanel panel) {
-								new PanelProducts().attach(panel, psql, focusListener);
+								new PanelProduct().attach(panel, psql, focusListener);
 							}	
 							
 						});
