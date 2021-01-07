@@ -5,7 +5,7 @@ import java.util.List;
 import com.uniproject.entity.AllergyProduct;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class AllergyProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
+public class AllergyProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Integer>{
 	
 	public AllergyProductDAO(AllergyProduct allergyproduct) {
 		super(allergyproduct);
@@ -27,17 +27,31 @@ public class AllergyProductDAO extends EngineDAO implements InterfaceDAO<Void, V
 
 	@Override
 	public String delete(int delta, PostgreSQL psql, Void... d) {
-		// TODO Auto-generated method stub
-		return null;		
+		generateQueryDelete(new int[] {1});
+		return QUERY;		
 	}
 
 	@Override
-	public List<?> select(int delta, PostgreSQL psql, String... s) {
+	public List<?> select(int delta, PostgreSQL psql, Integer... s) {
 		List<AllergyProduct> prod = null;
-		if(delta == 0)
-			 prod = (List<AllergyProduct>)generateQuerySelect().endGenerateSelect(psql, new AllergyProduct());
-		else
-			 prod = (List<AllergyProduct>)generateQuerySelect().generateQueryOrderBy("id", "desc").endGenerateSelect(psql, new AllergyProduct());
+		switch(delta) {
+		
+			case 0:
+				prod = (List<AllergyProduct>)generateQuerySelect().endGenerateSelect(psql, new AllergyProduct());
+				break;
+				
+			case 1:
+				prod = (List<AllergyProduct>)generateQuerySelect().generateQueryOrderBy("id", "desc").endGenerateSelect(psql, new AllergyProduct());
+				break;
+				
+			case 2:
+				prod = (List<AllergyProduct>)generateQuerySelect()
+												.generateQueryWhere("allprod.id = " + s[0])
+													.endGenerateSelect(psql, new AllergyProduct());
+				break;
+		
+		}
+		
 		return prod;
 	}
 

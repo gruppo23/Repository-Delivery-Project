@@ -25,8 +25,8 @@ public class Restaurant_ProductDAO extends EngineDAO implements InterfaceDAO<Voi
 
 	@Override
 	public String delete(int delta, PostgreSQL psql, Void... d) {
-		// TODO Auto-generated method stub
-		return null;
+		generateQueryDelete(new int[] {1});
+		return QUERY;
 	}
 
 	@Override

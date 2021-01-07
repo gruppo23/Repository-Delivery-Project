@@ -62,7 +62,7 @@ public class PanelCustomer implements PanelAttachInterface{
 		for(Allergen allergen : allergens) {
 			modelListCheck.add(false, allergen.getName_allergen(), allergen.getId_allergen());
 		}
-		JScrollPane paneAllergen = modelListCheck.build(714, 330, 200, 200);
+		JScrollPane paneAllergen = modelListCheck.build(714, 384, 263, 113);
 		
 		JLabel lbFiscalCode = new JLabel("CODICE FISCALE");
 		lbFiscalCode.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -195,6 +195,10 @@ public class PanelCustomer implements PanelAttachInterface{
 		txtTelefono.setBounds(362, 384, 263, 40);
 		txtTelefono.putClientProperty("pattern", "[0-9]{10}");
 		txtTelefono.setFont(new Font("Tahoma", Font.PLAIN, 20));
+
+		JLabel lblAllergie = new JLabel("ALLERGIE");
+		lblAllergie.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblAllergie.setBounds(714, 329, 263, 44);
 		
 		JButton btnSalvaCustomer = new JButton("SALVA CLIENTE");
 		btnSalvaCustomer.setBackground(Color.ORANGE);
@@ -330,6 +334,7 @@ public class PanelCustomer implements PanelAttachInterface{
 		context.add(lblTelefono);
 		context.add(lblGender);
 		context.add(lblData);
+		context.add(lblAllergie);
 		context.add(txtCodiceFiscale);
 		context.add(txtNome);
 		context.add(txtCap);

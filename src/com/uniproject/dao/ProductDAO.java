@@ -24,8 +24,9 @@ public class ProductDAO extends EngineDAO implements InterfaceDAO<String, Void, 
 
 	@Override
 	public String update(int delta, PostgreSQL psql, Void... u) {
-		// TODO Auto-generated method stub
-		return null;
+		generateQueryUpdate(new int[] {1, 2, 3, 4, 5}, new int[] {0});
+		System.out.println(QUERY);
+		return QUERY;
 	}
 
 	@Override
