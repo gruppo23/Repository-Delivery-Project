@@ -24,6 +24,7 @@ public class CustomerDAO extends EngineDAO implements InterfaceDAO<Void, Void, V
 	@Override
 	public String update(int delta, PostgreSQL psql, Void... u) {
 		generateQueryUpdate(new int[] {1, 2, 3, 4, 5, 6, 7}, new int[] {0});
+		System.out.println(QUERY);
 		return QUERY;
 	}
 
@@ -46,6 +47,11 @@ public class CustomerDAO extends EngineDAO implements InterfaceDAO<Void, Void, V
 								.endGenerateSelect(psql, new Customer());
 		
 		return customers;
+	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
 	}
 
 }

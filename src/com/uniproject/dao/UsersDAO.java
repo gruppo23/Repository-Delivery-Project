@@ -38,4 +38,9 @@ public class UsersDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void
 					.endGenerateSelect(psql, new Users());
 	}
 
+	@Override
+	public String select(int delta) {
+		return null;
+	}
+	
 }

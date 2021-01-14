@@ -40,5 +40,10 @@ public class Restaurant_TypeDAO extends EngineDAO implements InterfaceDAO<Void, 
 		else
 			return generateQuerySelect().generateQueryWhere(" rest_type.tipology =  '" + s[0] + "'").endGenerateSelect(psql, new Restaurant_Tipology());
 	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
+	}
 
 }

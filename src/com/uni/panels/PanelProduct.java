@@ -241,7 +241,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// -----------
 		// -- Nuovo --
 		// -----------
-		JButton btnNew = new JButton("Nuovo");
+		JButton btnNew = new JButton("Nuovo Prodotto");
 		btnNew.setBackground(Color.orange);
 		btnNew.setBounds(10, 10, 150, 50);
 		btnNew.addActionListener(new ActionListener() {
@@ -255,7 +255,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// ----------------- 
 		// -- Salvataggio --
 		// -----------------
-		JButton btnSave = new JButton("Salva");
+		JButton btnSave = new JButton("Salva Prodotto");
 		btnSave.setBounds(170, 10, 150, 50);
 		btnSave.setBackground(Color.orange);
 		btnSave.addActionListener(new ActionListener() {
@@ -277,6 +277,21 @@ public class PanelProduct implements PanelAttachInterface {
 				// Validazione fallita!
 				if(!form.validateValueForm()) {
 					JOptionPane.showMessageDialog(null, "Attenzione, validare correttamente i campi!", "Errore", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				// Ottieni numeri ristoranti selezionati
+				int count = 0;
+				for(Object o : modelListCheck.getResult()) {
+					if((boolean) ((Object[])o)[0]) {
+						count++;
+						if(count > 1) break;
+					}
+				}
+				
+				// Prodotti con gestione quantità
+				if(count > 1 && !chManageQuantity.isSelected()) {
+					JOptionPane.showMessageDialog(null, "Attenzione, prodotti con gestione delle quantità possono essere associati ad un singolo ristorante!", "Errore", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				
@@ -408,7 +423,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// -------------------
 		// -- Cancellazione --
 		// -------------------
-		JButton btnDel = new JButton("Elimina");
+		JButton btnDel = new JButton("Elimina Prodotto");
 		btnDel.setBackground(Color.orange);
 		btnDel.setBounds(330, 10, 150, 50);
 		btnDel.addActionListener(new ActionListener() {
@@ -463,7 +478,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// --------------
 		// -- Modifica --
 		// --------------
-		JButton btnMod = new JButton("Modifica");
+		JButton btnMod = new JButton("Salva Modifica");
 		btnMod.setBackground(Color.orange);
 		btnMod.setBounds(490, 10, 150, 50);
 		btnMod.addActionListener(new ActionListener() {
@@ -483,6 +498,12 @@ public class PanelProduct implements PanelAttachInterface {
 					// Validazione fallita!
 					if(!form.validateValueForm()) {
 						JOptionPane.showMessageDialog(null, "Attenzione, validare correttamente i campi!", "Errore", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					// Prodotti con gestione quantità
+					if(modelListCheck.getResult().size() > 1 && !chManageQuantity.isSelected()) {
+						JOptionPane.showMessageDialog(null, "Attenzione, prodotti con gestione delle quantità possono essere associati ad un singolo ristorante!", "Errore", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					
@@ -665,7 +686,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// ----------------
 		JButton btnPre = new JButton("<<");
 		btnPre.setBackground(Color.orange);
-		btnPre.setBounds(10, 500, 150, 50);
+		btnPre.setBounds(170, 480, 150, 50);
 		btnPre.addActionListener(new ActionListener() {
 			
 			@Override
@@ -686,7 +707,7 @@ public class PanelProduct implements PanelAttachInterface {
 		// ----------------
 		JButton btnNext = new JButton(">>");
 		btnNext.setBackground(Color.orange);
-		btnNext.setBounds(170, 500, 150, 50);
+		btnNext.setBounds(330, 480, 150, 50);
 		btnNext.addActionListener(new ActionListener() {
 			
 			@Override
@@ -755,8 +776,12 @@ public class PanelProduct implements PanelAttachInterface {
 				txtNomeDelProdotto.setText(relProdRest.getName_product());
 				txtPrice.setText(String.valueOf(relProdRest.getPrice()).replace(".", ","));
 				if(!relProdRest.getImg_path().equals("null")) {
-					genericPanelImage.setImage(ImageIO.read(new File(relProdRest.getImg_path())));
-					filePath = relProdRest.getImg_path();
+					try {
+						genericPanelImage.setImage(ImageIO.read(new File(relProdRest.getImg_path())));
+						filePath = relProdRest.getImg_path();
+					}catch(Exception e) {}
+				}else {
+					filePath = null;
 				}
 				txtPz.setText(String.valueOf(relProdRest.getQuantity()));
 				

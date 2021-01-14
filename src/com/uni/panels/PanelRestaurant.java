@@ -29,6 +29,9 @@ public class PanelRestaurant implements PanelAttachInterface{
 	// Valore selezionato della tipologia
 	private int keyMapTipology = -1;
 	
+	// Textfield codice ristorante
+	private JTextField fieldCode;
+	
 	@Override
 	public void attach(JPanel context, PostgreSQL psql, FocusListener focusListener) {
 		
@@ -54,12 +57,42 @@ public class PanelRestaurant implements PanelAttachInterface{
 		lbCode.setBounds(10, 10, 300, 40);
 		lbCode.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		
-		JTextField fieldCode = new JTextField();
+		fieldCode = new JTextField();
 		fieldCode.setBounds(10, 60, 400, 40);
 		fieldCode.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		fieldCode.addFocusListener(focusListener);
 		fieldCode.putClientProperty("pattern", "[A-Z]{1}[0-9]{4}");
+		fieldCode.setEnabled(false);
 		form.addToForm(fieldCode); // Aggiungi a form
+		
+		// Imposta l'ultimo ristorante
+		List<Restaurant> restaurants = (List<Restaurant>)new RestaurantDAO(new Restaurant()).select(1, psql);
+		String lastRestaurant = "";
+		if(restaurants == null || restaurants.size() == 0) {
+			fieldCode.setText("R0001");
+		}else {
+			
+			lastRestaurant = restaurants.get(0).getId_restaurant().replace("R", "");
+			int numConverted = Integer.parseInt(lastRestaurant) + 1;
+			
+			String newRest = "";
+			if(numConverted < 10) {
+				newRest += "000" + numConverted;
+			}else {
+				if(numConverted < 100) {
+					newRest += "00" + numConverted;
+				}else {
+					if(numConverted < 1000) {
+						newRest += "0" + numConverted;
+					}else {
+						newRest = String.valueOf(numConverted);
+					}
+				}
+			}
+
+			fieldCode.setText("R" +newRest);
+			
+		}
 		
 		// Codice ristorante
 		JLabel lbTipology = new JLabel("TIPOLOGIA RISTORANTE (*)");

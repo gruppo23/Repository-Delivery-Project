@@ -40,4 +40,11 @@ public interface InterfaceDAO<I, U, D, S> {
 	 */
 	public List<?> select(int delta, PostgreSQL psql, S ... s);
 	
+	/**
+	 * 
+	 * @param delta
+	 * @return
+	 */
+	public String select(int delta);
+	
 }

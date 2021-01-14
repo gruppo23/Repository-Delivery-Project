@@ -40,5 +40,10 @@ public class Relation_AllergyProductDAO extends EngineDAO implements InterfaceDA
 					.generateJoin(JoinTypes.INNER, "allergen as al", "ON ap.id_allergen = al.id_allergen")
 						.endGenerateSelect(psql, new Relation_AllergyProduct());
 	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
+	}
 
 }

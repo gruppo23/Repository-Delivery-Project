@@ -41,4 +41,9 @@ public class RelationRestaurantProductDAO extends EngineDAO implements Interface
 						.endGenerateSelect(psql, new Relation_RestaurantProduct());
 	}
 
+	@Override
+	public String select(int delta) {
+		return null;
+	}
+	
 }

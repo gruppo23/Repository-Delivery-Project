@@ -38,5 +38,10 @@ public class AllergyCustomer_RelationDAO extends EngineDAO implements InterfaceD
 							.generateQueryWhere(" c.fiscal_code =  '" + s[0] + "'")
 								.endGenerateSelect(psql, new Relation_AllergyCustomerDescription());
 	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
+	}
 
 }

@@ -35,7 +35,31 @@ public class RestaurantDAO extends EngineDAO implements InterfaceDAO<String, Str
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
-		return generateQuerySelect().endGenerateSelect(psql, new Restaurant());
+		
+		List<Restaurant> restaurant = null;
+		
+		switch(delta) {
+			
+			case 0:
+				restaurant = (List<Restaurant>)generateQuerySelect().endGenerateSelect(psql, new Restaurant());
+			break;
+			
+			case 1:
+				restaurant = (List<Restaurant>)
+								generateQuerySelect()
+									.generateQueryOrderBy("id_restaurant", "desc")
+										.generateQueryLimit()
+											.endGenerateSelect(psql, new Restaurant());
+			break;
+		
+		}
+		
+		return restaurant;
+	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
 	}
 
 }

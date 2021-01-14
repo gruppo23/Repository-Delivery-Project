@@ -49,4 +49,9 @@ public class DriverDAO extends EngineDAO implements InterfaceDAO<Void, Void, Voi
 		return drivers;
 	}
 
+	@Override
+	public String select(int delta) {
+		return null;
+	}
+	
 }

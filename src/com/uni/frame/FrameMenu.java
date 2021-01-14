@@ -33,6 +33,7 @@ import com.uni.panels.PanelCustomerList;
 import com.uni.panels.PanelDriver;
 import com.uni.panels.PanelDriverList;
 import com.uni.panels.PanelListRestaurant;
+import com.uni.panels.PanelOrder;
 import com.uni.panels.PanelProduct;
 import com.uni.panels.PanelRestaurant;
 import com.uni.panels.PanelRestaurantTipology;
@@ -175,8 +176,29 @@ public class FrameMenu extends JFrame{
 				// Switch testo menu
 				switch(text) {
 				
+					// ---------------------
+					// -- Registra ordine --
+					// ---------------------
+					case "Registra ordine":
+						
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia creazione ristorante
+	                    new PanelMenu(1500, 900)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelOrder().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+						
+					break;
+				
 	                // ---------------------
-	                // ------ ALLERGIE------
+	                // ------ Allergie------
 	                // ---------------------
 	                case "Registra allergie alimenti":
 	                   

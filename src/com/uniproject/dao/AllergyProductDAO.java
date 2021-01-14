@@ -54,5 +54,12 @@ public class AllergyProductDAO extends EngineDAO implements InterfaceDAO<Void, V
 		
 		return prod;
 	}
+	
+	@Override
+	public String select(int delta) {
+		generateQuerySelect("ap.id", "ap")
+			.generateQueryWhere("ap.id_allergen IN");
+		return QUERY;
+	}
 
 }

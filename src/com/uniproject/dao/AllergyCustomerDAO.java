@@ -38,5 +38,12 @@ public class AllergyCustomerDAO extends EngineDAO implements InterfaceDAO<Void, 
 			 prod = (List<AllergyCustomer>)generateQuerySelect().endGenerateSelect(psql, new AllergyCustomer());
 		return prod;
 	}
+	
+	@Override
+	public String select(int delta) {
+		generateQuerySelect("ac.id_allergen", "ac")
+			.generateQueryWhere("ac.fiscal_code = ");
+		return QUERY;
+	}
 
 }

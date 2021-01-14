@@ -43,5 +43,10 @@ public class Relation_RestaurantTipologyDAO extends EngineDAO implements Interfa
 								.endGenerateSelect(psql, new Relation_RestaurantTipology());																			
 		}
 	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
+	}
 
 }

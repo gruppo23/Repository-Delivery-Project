@@ -41,5 +41,10 @@ public class AllergenDAO extends EngineDAO implements InterfaceDAO<String, Void,
 		return allerg;
 		
 	}
+	
+	@Override
+	public String select(int delta) {
+		return null;
+	}
 
 }

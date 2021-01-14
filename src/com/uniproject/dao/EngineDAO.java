@@ -37,7 +37,7 @@ public class EngineDAO {
 			Class<?> genericClass = genericDao.getClass();
 			
 			// Parte iniziale Query di insert
-			QUERY = "INSERT INTO " + genericClass.getSimpleName().toLowerCase() + " (";
+			QUERY = "INSERT INTO " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).tableName() + " (";
 			
 			// Colonne e campi!
 			String columns = "";
@@ -143,6 +143,51 @@ public class EngineDAO {
 		
 	}
 	
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected EngineDAO freeQuery(String query) {
+		QUERY = query;
+		return this;
+	}
+	
+	protected EngineDAO generateQuerySelect(String fields, String alias, boolean ... isDistinct) {
+		
+		// Recupera classe.
+		Class<?> genericClass = genericDao.getClass();
+		
+		// Parte iniziale Query select
+		QUERY = "SELECT ";
+		if(isDistinct.length > 0) {
+			if(isDistinct[0])
+				QUERY += "DISTINCT ";
+		}
+		QUERY += fields;
+		QUERY += " FROM " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).tableName() + " AS " + alias + " ";
+		
+		return this;
+	}
+	
+	
+	protected EngineDAO generateQuerySelect(String fields, boolean ... isDistinct) {
+		
+		// Recupera classe.
+		Class<?> genericClass = genericDao.getClass();
+		
+		// Parte iniziale Query select
+		QUERY = "SELECT ";
+		if(isDistinct.length > 0) {
+			if(isDistinct[0])
+				QUERY += "DISTINCT ";
+		}
+		QUERY += fields;
+		QUERY += " FROM " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).tableName() + " AS " + ((AliasTableDAO)genericClass.getDeclaredAnnotations()[0]).alias() + " ";
+		
+		return this;
+	}
+	
 	/**
 	 * 
 	 * @param isDistinct
@@ -176,6 +221,11 @@ public class EngineDAO {
 			System.out.println("Errore generazione query: " + e); 
 		}
 		
+		return this;
+	}
+	
+	protected EngineDAO generateQueryLimit(int ... limit) {
+		QUERY += " LIMIT " + (limit.length == 0 ? 1 : limit[0]);
 		return this;
 	}
 	
@@ -255,8 +305,6 @@ public class EngineDAO {
 		
 		try {
 			
-			System.out.println(QUERY);
-			
 			// Esegui da postgre la query
 			ResultSet rs = psql.selectQuery(QUERY);
 			
@@ -266,8 +314,12 @@ public class EngineDAO {
 				Object model = modelClass.getClass().getDeclaredConstructor().newInstance();
 				
 				for(Field field : model.getClass().getDeclaredFields()) {
-					field.setAccessible(true);
-					field.set(model, rs.getObject(field.getName()));
+					try {
+						field.setAccessible(true);
+						field.set(model, rs.getObject(field.getName()));	
+					}catch(Exception e) {
+						//System.out.println("Errore:" + e);
+					}
 				}
 				generatedList.add(model);
 				

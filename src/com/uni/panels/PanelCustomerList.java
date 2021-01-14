@@ -115,6 +115,10 @@ public class PanelCustomerList implements PanelAttachInterface{
 					if(!errUp) {
 						JOptionPane.showMessageDialog(null, modified > 0 ? "Cliente/i aggiornato/i correttamente!" : "Attenzione, nessuna riga modificata!");
 						modified = 0;
+						context.removeAll();
+						context.repaint();
+						context.revalidate();
+						attach(context, psql, focusListener); // Ricrea istanza!
 					}
 					
 				}
