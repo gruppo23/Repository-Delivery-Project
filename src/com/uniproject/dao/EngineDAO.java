@@ -318,7 +318,7 @@ public class EngineDAO {
 						field.setAccessible(true);
 						field.set(model, rs.getObject(field.getName()));	
 					}catch(Exception e) {
-						//System.out.println("Errore:" + e);
+						System.out.println("Errore:" + e);
 					}
 				}
 				generatedList.add(model);

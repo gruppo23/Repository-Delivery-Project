@@ -4,7 +4,7 @@ import com.uniproject.dao.AliasFieldDAO;
 import com.uniproject.dao.AliasTableDAO;
 
 @AliasTableDAO(alias = "_do", tableName = "delivery_order")
-public class DeliveryOrder {
+public class Delivery_Order {
 
 	@AliasFieldDAO(alias = "_do", as = "id")
 	private int id;

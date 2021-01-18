@@ -34,6 +34,7 @@ import com.uni.panels.PanelDriver;
 import com.uni.panels.PanelDriverList;
 import com.uni.panels.PanelListRestaurant;
 import com.uni.panels.PanelOrder;
+import com.uni.panels.PanelOrderList;
 import com.uni.panels.PanelProduct;
 import com.uni.panels.PanelRestaurant;
 import com.uni.panels.PanelRestaurantTipology;
@@ -114,16 +115,16 @@ public class FrameMenu extends JFrame{
 		try {
 			
 			// Carica immagine..
-			ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResourceAsStream(SingletonImage.getInstance().getImage(0)).readAllBytes());
-			imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(300, 236, Image.SCALE_SMOOTH));
-			JLabel labelBackImage = new JLabel(imageIcon);
-			labelBackImage.setBounds(
-					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 320, 
-					(int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 320, 
-					300, 
-					236
-			);
-			add(labelBackImage);
+            ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResourceAsStream(SingletonImage.getInstance().getImage(0)).readAllBytes());
+            imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(200, 136, Image.SCALE_SMOOTH));
+            JLabel labelBackImage = new JLabel(imageIcon);
+            labelBackImage.setBounds(
+                    (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 220,
+                    (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 230,
+                    200,
+                    136
+            );
+            add(labelBackImage);
 			
 		}catch(Exception e) {
 			
@@ -176,6 +177,27 @@ public class FrameMenu extends JFrame{
 				// Switch testo menu
 				switch(text) {
 				
+					// ------------------
+					// -- Lista ordini --
+					// ------------------ 
+					case "Lista ordini":
+						
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia creazione ristorante
+	                    new PanelMenu(1500, 900)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelOrderList().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+						
+					break;
+					
 					// ---------------------
 					// -- Registra ordine --
 					// ---------------------

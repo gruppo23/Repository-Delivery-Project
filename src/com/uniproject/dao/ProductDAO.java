@@ -137,8 +137,8 @@ public class ProductDAO extends EngineDAO implements InterfaceDAO<String, Void, 
 	
 	@Override
 	public String select(int delta) {
-		generateQuerySelect("p.id")
-			.generateJoin(JoinTypes.INNER, " allergyproduct AS ap ", " ON p.id = ap.id ");
+		generateQuerySelect("p.id");
+			//RIGA RIMOSSA PER PROBLEMI.generateJoin(JoinTypes.INNER, " allergyproduct AS ap ", " ON p.id = ap.id ");
 		return QUERY;
 	}
 

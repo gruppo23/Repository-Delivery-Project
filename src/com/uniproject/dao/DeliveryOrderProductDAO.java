@@ -2,9 +2,11 @@ package com.uniproject.dao;
 
 import java.util.List;
 
+import com.uniproject.entity.Delivery_Order_Product;
+import com.uniproject.entity.Driver;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Void>{
+public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
 
 	public DeliveryOrderProductDAO(Object model) {
 		super(model);
@@ -24,14 +26,8 @@ public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<V
 
 	@Override
 	public String delete(int delta, PostgreSQL psql, Void... d) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<?> select(int delta, PostgreSQL psql, Void... s) {
-		// TODO Auto-generated method stub
-		return null;
+		generateQueryDelete(new int[] {0});
+		return QUERY;
 	}
 
 	@Override
@@ -39,5 +35,19 @@ public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<V
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	public List<?> select(int delta, PostgreSQL psql, String... s) {
+		
+		List<Delivery_Order_Product> orders = null;
+		if(delta == 0)
+			orders = (List<Delivery_Order_Product>)generateQuerySelect().endGenerateSelect(psql, new Delivery_Order_Product());
+		else
+			orders = (List<Delivery_Order_Product>)generateQuerySelect()
+						.generateQueryWhere("")
+							.generateLike()
+								.endGenerateSelect(psql, new Delivery_Order_Product());
+		
+		return orders;
+	}
 }
