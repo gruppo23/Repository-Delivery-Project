@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import com.uniproject.entity.Customer;
 import com.uniproject.entity.DeliveryOrderQuantity;
 import com.uniproject.entity.Delivery_Order;
 import com.uniproject.dao.DeliveryOrderDao;
@@ -31,11 +32,18 @@ public class PanelOrderList {
 	// Cancellato
 	private int deleted  = 0;
 	
+	// Updatato
+	private int updated = 0;
+	
 	// Tabella
 	private JTable tableDrivers;
 		
 	// Errore delete
 	private boolean errDel = false;
+	
+	// Errore update
+	private boolean errUp = false;
+	
 	// Righe tabella
 	private Object [][] rows;
 
@@ -59,6 +67,37 @@ public class PanelOrderList {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+				errUp = false;
+				updated = 0;
+				for(int obj = 0; obj < rows.length; obj++) {
+					
+					if((Boolean)tableOrders.getModel().getValueAt(obj, 7)) {
+						
+						Delivery_Order _do = new Delivery_Order();
+						_do.setId(Integer.parseInt(tableOrders.getModel().getValueAt(obj, 0).toString()));
+						_do.setStatus(1);
+						psql.updateQuery(new DeliveryOrderDao(_do).update(0, psql), new InterfaceSuccessErrorDAO() {
+							
+							@Override
+							public void ok() { updated++; }
+							
+							@Override
+							public void err(String e) { errUp = true; }
+						});
+						
+					}
+					
+				}
+				
+				if(!errUp) {
+					JOptionPane.showMessageDialog(null, updated > 0 ? "Aggiornamento avvenuto con successo" : "Nessuna riga aggiornata");
+					context.removeAll();
+					context.repaint();
+					context.revalidate();
+					attach(context, psql, focusListener); // Ricrea istanza!
+				}else {
+					JOptionPane.showMessageDialog(null, "Attenzione, si è verificato un errore di aggiornamento!", "Errore", JOptionPane.ERROR_MESSAGE);
+				}
 				
 			}
 			
@@ -67,7 +106,7 @@ public class PanelOrderList {
 		// ---------------------------
 		// -- Bottone cancellazione --
 		// ---------------------------
-		JButton btnDel = new JButton("Elimina");
+		JButton btnDel = new JButton("Annulla");
 		btnDel.setBounds(850, 65, 150, 40);
 		btnDel.setBackground(Color.orange);
 		btnDel.addActionListener(new ActionListener() {
@@ -78,7 +117,7 @@ public class PanelOrderList {
 				deleted = 0;
 				for(int obj = 0; obj < rows.length; obj++) {
 					
-					if((Boolean)tableOrders.getModel().getValueAt(obj, 6)) {
+					if((Boolean)tableOrders.getModel().getValueAt(obj, 7)) {
 
 						Delivery_Order _do = new Delivery_Order();
 						_do.setId(Integer.parseInt(tableOrders.getModel().getValueAt(obj, 0).toString()));
@@ -115,11 +154,11 @@ public class PanelOrderList {
 	
 			// Colonne tabella
 			Object [] columns = {
-				"Codice ordine", "Ristorante","CF cliente","CF driver","Totale", "Quantità", "Elimina ordine"
+				"Codice ordine", "Ristorante","CF cliente","CF driver","Totale", "Data ordine", "Quantità", "Seleziona ordine"
 			};
 	
 			// Righe
-			rows = new Object[orders.size()][7];
+			rows = new Object[orders.size()][8];
 			
 			int index = 0;
 			for(Delivery_Order o : orders) {
@@ -134,8 +173,9 @@ public class PanelOrderList {
 				rows[index][2] = o.getId_customer();
 				rows[index][3] = o.getId_driver();
 				rows[index][4] = "€ " + String.valueOf(String.format("%.2f", o.getTotale()));
-				rows[index][5] = (int) qta;
-				rows[index][6] = Boolean.FALSE;
+				rows[index][5] = o.getDate_Order();
+				rows[index][6] = (int) qta;
+				rows[index][7] = Boolean.FALSE;
 				index++;
 				
 			}
@@ -143,12 +183,12 @@ public class PanelOrderList {
 			tableOrders = new JTable(rows,columns) {
 				@Override
 			    public boolean isCellEditable(int row, int column) {
-			        return column < 6 ? false : true; 
+			        return column < 7 ? false : true; 
 			    }
 				
 	            @Override
 	            public Class<?> getColumnClass(int column) {
-            		return column < 6 ? String.class : Boolean.class;
+            		return column < 7 ? String.class : Boolean.class;
 	            }
 					
 			};
@@ -156,51 +196,54 @@ public class PanelOrderList {
 			// ScrollPanel 
 			JScrollPane sp = new JScrollPane(tableOrders);
 			
-			GenericResearch gr = new GenericResearch(new Delivery_Order_Product());
+			GenericResearch gr = new GenericResearch(new Delivery_Order());
 			gr.appendElement(context, 10, 65, new IGet() {
 				
 				@Override
 				public void put(String text) {
 					
-					Delivery_Order_Product dOrderProduct = null;
-					Delivery_Order_Product dOrder = null;
+
+					Delivery_Order _do = null;
 					try {
-						dOrderProduct = (Delivery_Order_Product) gr.invokeSet(text);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						_do = (Delivery_Order) gr.invokeSet(text);
+					}catch(Exception e) {
 						JOptionPane.showMessageDialog(null, "Si è verificato un errore durante la ricerca: " + e.getMessage() , "Errore", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					
-					List<Delivery_Order_Product> dOrderProducts = (List<Delivery_Order_Product>)new DeliveryOrderProductDAO(dOrderProduct).select(0, psql);
-					List<Delivery_Order> dOrders= (List<Delivery_Order>)new DeliveryOrderDao(dOrder).select(0, psql);
+
+					List<Delivery_Order> lDop = (List<Delivery_Order>)new DeliveryOrderDao(_do).select(2, psql, text);
+
 					// Righe
-					rows = new Object[dOrderProducts.size()][9];
+					rows = new Object[lDop.size()][8];
 					
 					// Cicla per le associazioni
-					int index1 = 0;
-					int index2 = 0;
-					for(Delivery_Order_Product dop : dOrderProducts) {
-						rows[index1][0] = dop.getId();
-						rows[index1][1] = dop.getId_product();
-						rows[index1][2] = dop.getId_order();
-						rows[index1][3] = dop.getQuantity();
-						index1++;
+					int index = 0;
+					for(Delivery_Order o : lDop) {
+						
+						double qta = 
+							((List<DeliveryOrderQuantity>) 
+									new DeliveryOrderQuantityDAO(new DeliveryOrderQuantity())
+										.select(0, psql, String.valueOf(o.getId()))).get(0).getQuantity();
+						
+						rows[index][0] = o.getId();
+						rows[index][1] = o.getId_restaurant();
+						rows[index][2] = o.getId_customer();
+						rows[index][3] = o.getId_driver();
+						rows[index][4] = "€ " + String.valueOf(String.format("%.2f", o.getTotale()));
+						rows[index][5] = o.getDate_Order();
+						rows[index][6] = (int) qta;
+						rows[index][7] = Boolean.FALSE;
+						index++;
+						
 					}
-					for(Delivery_Order o: dOrders ) {
-						rows[index2][4] = o.getId_restaurant();
-						rows[index2][5] = o.getId_customer();
-						rows[index2][6] = o.getId_driver();
-						rows[index2][7] ="€ "+ o.getTotale();
-						rows[index2][8] = Boolean.FALSE;
-						index2++;
-				}
 					
 					gr.getNewModel(tableOrders, columns, rows);
 					
 				}
+				
 			});
 			
-			JLabel lblCercaOrdine= new JLabel("Cerca ordine in base all'id");
+			JLabel lblCercaOrdine= new JLabel("Cerca ordine");
 			lblCercaOrdine.setFont(new Font("Tahoma", Font.PLAIN, 18));
 			lblCercaOrdine.setBounds(15, 25, 150, 35);
 			

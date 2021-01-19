@@ -394,7 +394,7 @@ public class PanelProduct implements PanelAttachInterface {
 				product.setName(txtNomeDelProdotto.getText());
 				product.setPrice(Double.parseDouble(txtPrice.getText().replace(",", ".")));
 				product.setVat_number(vat);
-				product.setManage_quantity(chManageQuantity.isSelected());
+				product.setManage_quantity(!chManageQuantity.isSelected());
 				product.setImg_path(filePath);
 				
 				// Salva
@@ -409,11 +409,11 @@ public class PanelProduct implements PanelAttachInterface {
 					@Override
 					public void err(String e) {
 						if(e.startsWith("ERRORE: un valore chiave duplicato viola il vincolo univoco")) {
-							e = "Il codice ristorante è già presente in archivio!";
+							e = "Il codice prodotto è già presente in archivio!";
 						}else {
 							e = "";
 						}
-						JOptionPane.showMessageDialog(null, e.equals("") ? "Inserimento tipologia fallito: " : e, "Errore", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, e.equals("") ? "Inserimento prodotto fallito: " : e, "Errore", JOptionPane.ERROR_MESSAGE);
 					}
 				});
 				
@@ -809,7 +809,7 @@ public class PanelProduct implements PanelAttachInterface {
 				}
 				
 				// CheckBox
-				chManageQuantity.setSelected(relProdRest.isManage_quantity());
+				chManageQuantity.setSelected(!relProdRest.isManage_quantity());
 				
 				// Aggiorna lista
 				modelListCheck.reset();

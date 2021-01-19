@@ -44,7 +44,7 @@ public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<V
 			orders = (List<Delivery_Order_Product>)generateQuerySelect().endGenerateSelect(psql, new Delivery_Order_Product());
 		else
 			orders = (List<Delivery_Order_Product>)generateQuerySelect()
-						.generateQueryWhere("")
+						.generateQueryWhere(" ")
 							.generateLike()
 								.endGenerateSelect(psql, new Delivery_Order_Product());
 		

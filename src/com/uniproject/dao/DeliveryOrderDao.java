@@ -20,7 +20,7 @@ public class DeliveryOrderDao extends EngineDAO implements InterfaceDAO<Void, Vo
 
 	@Override
 	public String update(int delta, PostgreSQL psql, Void... u) {
-		// TODO Auto-generated method stub
+		generateQueryUpdate(new int[] {4}, new int[] {0});
 		return QUERY;
 	}
 
@@ -37,11 +37,33 @@ public class DeliveryOrderDao extends EngineDAO implements InterfaceDAO<Void, Vo
 
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
+		
 		List<Delivery_Order> deliveryOrders = null;
-		if(delta == 0)
-			deliveryOrders = (List<Delivery_Order>)generateQuerySelect().endGenerateSelect(psql, new Delivery_Order());
-		else
-			deliveryOrders = (List<Delivery_Order>)generateQuerySelect().generateQueryOrderBy("_do.id", "desc").generateQueryLimit().endGenerateSelect(psql, new Delivery_Order());
+		
+		switch(delta) {
+		
+			case 0:
+				deliveryOrders = (List<Delivery_Order>)generateQuerySelect().generateQueryWhere("_do.status = 0").endGenerateSelect(psql, new Delivery_Order());
+			break;
+		
+			case 1:
+				deliveryOrders = (List<Delivery_Order>)generateQuerySelect().generateQueryOrderBy("_do.id", "desc").generateQueryLimit().endGenerateSelect(psql, new Delivery_Order());
+			break;
+			
+			case 2:
+				generateQuerySelect();
+				generateQueryWhere(" ");
+				QUERY += "(";
+				generateLike();
+				QUERY += ") AND _do.status = 0";
+				QUERY = QUERY.replace("OR(status::text LIKE '%"+s[0]+"%')", "");
+				System.out.println(QUERY);
+				deliveryOrders = (List<Delivery_Order>) endGenerateSelect(psql, new Delivery_Order());
+			break;
+			
+		}
+		
+
 		return deliveryOrders;
 	}
 }

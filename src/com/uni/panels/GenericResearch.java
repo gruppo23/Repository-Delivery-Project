@@ -60,22 +60,34 @@ public class GenericResearch {
 		
 		for(Method method : model.getClass().getDeclaredMethods()) {
 			if(method.getName().toLowerCase().startsWith("set")) {
+				System.out.println(method.getGenericParameterTypes()[0].getTypeName());
 				if(!method.getGenericParameterTypes()[0].getTypeName().contains("String")) {
-					switch(method.getGenericParameterTypes()[0].getTypeName().split(".")[2].toLowerCase()) {
+					switch(method.getGenericParameterTypes()[0].getTypeName().toLowerCase()) { //method.getGenericParameterTypes()[0].getTypeName().split(".")[2].toLowerCase()
 						
 						// int
 						case "int":
-							method.invoke(model, Integer.parseInt(value));
+							try {
+								method.invoke(model, Integer.parseInt(value));
+							}catch(Exception e) {
+								method.invoke(model, -1);
+							}
 						break;
-						
 						// double
 						case "double":
-							method.invoke(model, Double.parseDouble(value));
+							try {
+								method.invoke(model, Double.parseDouble(value));
+							}catch(Exception e) {
+								method.invoke(model, -1);
+							}
 						break;
 						
 						// boolean
 						case "boolean":
-							method.invoke(model, Boolean.parseBoolean(value));
+							try {
+								method.invoke(model, Boolean.parseBoolean(value));
+							}catch(Exception e) {
+								method.invoke(model, false);
+							}
 						break;
 						
 					}

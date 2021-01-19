@@ -23,6 +23,9 @@ public class Delivery_Order {
 	
 	@AliasFieldDAO(alias = "_do", as = "totale")
 	private double totale;
+	
+	@AliasFieldDAO(alias = "_do", as = "date_order")
+	private String date_order;
 
 	/**
 	 * 
@@ -120,5 +123,20 @@ public class Delivery_Order {
 		this.totale = totale;
 	}
 	
+	/**
+	 * 
+	 * @param date_order
+	 */
+	public void setDate_Order(String date_order) {
+		this.date_order = date_order;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDate_Order() {
+		return this.date_order;
+	}
 	
 }

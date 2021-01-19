@@ -8,8 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.ErrorManager;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -26,21 +29,25 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.uni.frame.PanelMenu;
+import com.uni.frame.PanelMenuBuilderInterface;
 import com.uniproject.dao.CustomerDAO;
 import com.uniproject.dao.DeliveryOrderDao;
 import com.uniproject.dao.DeliveryOrderProductDAO;
-import com.uniproject.dao.DriverCounterDeliveryDAO;
 import com.uniproject.dao.DriverDAO;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
 import com.uniproject.dao.ProductDAO;
+import com.uniproject.dao.ProductRestaurantQuantityDAO;
 import com.uniproject.dao.RestaurantDAO;
+import com.uniproject.dao.Restaurant_ProductDAO;
 import com.uniproject.entity.Customer;
 import com.uniproject.entity.Delivery_Order;
 import com.uniproject.entity.Delivery_Order_Product;
 import com.uniproject.entity.Driver;
-import com.uniproject.entity.DriverCounterDelivery;
 import com.uniproject.entity.Product;
+import com.uniproject.entity.ProductRestaurantQuantity;
 import com.uniproject.entity.Restaurant;
+import com.uniproject.entity.Restaurant_Product;
 import com.uniproject.jdbc.PostgreSQL;
 
 public class PanelOrder implements PanelAttachInterface{
@@ -56,7 +63,9 @@ public class PanelOrder implements PanelAttachInterface{
 		private double subTot;
 		private boolean isPercentuale;
 		private double valuePercent;
-		
+		private String restaurant_code;
+		private boolean manage_quantity;
+		private int scorte;
 	}
 	
 	/**
@@ -130,14 +139,19 @@ public class PanelOrder implements PanelAttachInterface{
 			}	
 				
 			if(!founded) {
-				Row row = new Row();
-				row.id_prod    = Integer.parseInt(table_prod.getValueAt(table_prod.getSelectedRow(), 0).toString());
-				row.desc 	   = table_prod.getValueAt(table_prod.getSelectedRow(), 1).toString();
-				row.price 	   = Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 2).toString());
-				row.vat_number = Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 3).toString());
-				row.quantity   = 1;
-				row.tipology   = 1;
+				
+				String restaurant = selectedCodeRestaurant;
+				
+				Row row 			= new Row();
+				row.id_prod    		= Integer.parseInt(table_prod.getValueAt(table_prod.getSelectedRow(), 0).toString());
+				row.desc 	   		= table_prod.getValueAt(table_prod.getSelectedRow(), 1).toString();
+				row.price 	   		= Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 2).toString());
+				row.vat_number 		= Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 3).toString());
+				row.quantity   		= 1;
+				row.tipology   		= 1;
+				row.restaurant_code = restaurant;
 				rows_sale.add(row);
+				
 			}
 		}
 		
@@ -413,6 +427,9 @@ public class PanelOrder implements PanelAttachInterface{
 	// Modelli
 	private ModelVendita modelVendita;
 	
+	// Errore aggiornamento scorte magazzino
+	private boolean errUpMag = false;
+	
 	// Righe dettaglio
 	private int inserted_row_detailt;
 	
@@ -520,10 +537,10 @@ public class PanelOrder implements PanelAttachInterface{
 				        return false;
 				    }
 				};
-				 table_prod.getColumnModel().getColumn(0).setPreferredWidth(0);
-				 table_prod.getColumnModel().getColumn(1).setPreferredWidth(80);
-				 table_prod.getColumnModel().getColumn(2).setPreferredWidth(0);
-				 table_prod.getColumnModel().getColumn(3).setPreferredWidth(0);
+			    table_prod.getColumnModel().getColumn(0).setPreferredWidth(0);
+				table_prod.getColumnModel().getColumn(1).setPreferredWidth(80);
+				table_prod.getColumnModel().getColumn(2).setPreferredWidth(0);
+				table_prod.getColumnModel().getColumn(3).setPreferredWidth(0);
 				
 				table_prod.addMouseListener(new MouseAdapter() {
 					@Override
@@ -573,6 +590,7 @@ public class PanelOrder implements PanelAttachInterface{
 		panel_order_cliente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel_order_cliente.setBounds(10, 302, 424, 64);
 		panel_order_cliente.setLayout(null);
+
 		//ALDO PROVE
 		lb_order_cliente = new JLabel("Cliente : ");
 		lb_order_cliente.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -702,18 +720,22 @@ public class PanelOrder implements PanelAttachInterface{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				List<DriverCounterDelivery> dcd = 
-						(List<DriverCounterDelivery>)new DriverCounterDeliveryDAO(new DriverCounterDelivery()).select(0, psql);
+				// Lista driver
+				List<Driver> dcd = (List<Driver>)new DriverDAO(new Driver()).select(2, psql, combo_order_select_transport.getSelectedItem().toString());
 				
-				String [] columns   = { "Codice fiscale driver", "Nome", "Cognome", "Stato" };
-				String [][] rows    = new String[drivers.size()][4];
+				if(dcd.size() == 0) {
+					JOptionPane.showMessageDialog(null, "Non si dispone di driver per il mezzo di trasporto " + combo_order_select_transport.getSelectedItem().toString(), "Attenzione", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				String [] columns   = { "Codice fiscale driver", "Nome", "Cognome"};
+				String [][] rows    = new String[dcd.size()][3];
 				
 				int index = 0;
-				for(DriverCounterDelivery driver : dcd) {
+				for(Driver driver : dcd) {
 					rows[index][0] = driver.getFiscal_code();
 					rows[index][1] = driver.getName();
 					rows[index][2] = driver.getSurname();
-					rows[index][3] = driver.getOrdini() < 3 ? "Disponibile" : "Occupato";
 					index++;
 				}	
 				
@@ -725,10 +747,6 @@ public class PanelOrder implements PanelAttachInterface{
 
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if(((String)tableDriver.getValueAt(tableDriver.getSelectedRow(), 3)).equals("Occupato")) {
-							JOptionPane.showMessageDialog(null, "Driver occupato", "Attenzione", JOptionPane.WARNING_MESSAGE);
-							return;
-						}
 						String fiscal_code = (String)tableDriver.getValueAt(tableDriver.getSelectedRow(), 0);
 						lb_order_driver.setText("Driver : " + fiscal_code);
 						modelVendita.fiscal_code_driver = fiscal_code;
@@ -802,6 +820,7 @@ public class PanelOrder implements PanelAttachInterface{
         });
 		
 		panel_order_filter_allergy.add(check_order_filter_allergy);
+
 		//INIZIO
 		panel_order_filter_price = new JPanel();
 		panel_order_filter_price.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -911,14 +930,40 @@ public class PanelOrder implements PanelAttachInterface{
 					JOptionPane.showMessageDialog(null, "Selezionare prodotti!", "Errore", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+
+				boolean errManageQuantity = false;
+				String desc = "";
 				
 				for(Row row : rows_sale) {
 					if(row.tipology == 1) {
 						ModelProduct model_product = new ModelProduct();
 						model_product.id_product = row.id_prod;
 						model_product.quantity = row.quantity;
+						
+						// Controlla x ogni prodotto le quantità 
+						ProductRestaurantQuantity prd =
+							(ProductRestaurantQuantity)
+								new ProductRestaurantQuantityDAO(new ProductRestaurantQuantity())
+									.select(0, psql, row.restaurant_code, String.valueOf(row.id_prod)).get(0);
+						
+						if(prd.isManage_quantity()) {
+							if(prd.getQuantity() - row.quantity < 0) {
+								desc = "Attenzione, hai superato il massimo delle scorte per il prodotto " + row.desc + " del ristorante " + row.restaurant_code;
+								errManageQuantity = true;
+								break;
+							}else {
+								row.manage_quantity = true;
+								row.scorte = prd.getQuantity();
+							}
+						}
+						
 						modelVendita.products.add(model_product);
 					}
+				}
+				
+				if(errManageQuantity) {
+					JOptionPane.showMessageDialog(null, desc, "Attenzione", JOptionPane.WARNING_MESSAGE);
+					return;
 				}
 				
 				// Totale
@@ -931,6 +976,11 @@ public class PanelOrder implements PanelAttachInterface{
 				delivery_order_head.setId_restaurant(modelVendita.code_restaurant);
 				delivery_order_head.setStatus(0);
 				delivery_order_head.setTotale(totale);
+				
+				// Imposta data!
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				String date = sdf.format(new Date());
+				delivery_order_head.setDate_Order(date);
 				
 				psql.insertQuery(
 					new DeliveryOrderDao(delivery_order_head).insert(0, psql),
@@ -965,12 +1015,47 @@ public class PanelOrder implements PanelAttachInterface{
 								
 							}
 							
-							if(inserted_row_detailt == toInsert) {
-								JOptionPane.showMessageDialog(null, "Ordine effettuato con successo!");
+							if(inserted_row_detailt == toInsert) {								
+								
+								// Scarica tutto il magazzino
+								errUpMag = false;
+								for(Row row : rows_sale) {
+									if(row.manage_quantity) {
+										Restaurant_Product rp = new Restaurant_Product();
+										rp.setId_product(row.id_prod);
+										rp.setId_restaurant(row.restaurant_code);
+										rp.setQuantity(row.scorte - row.quantity);
+										psql.updateQuery(new Restaurant_ProductDAO(rp).update(0, psql), new InterfaceSuccessErrorDAO() {
+											
+											@Override
+											public void ok() {  }
+											
+											@Override
+											public void err(String e) { errUpMag = true; }
+											
+										});
+									}
+								}
+								if(errUpMag) {
+									JOptionPane.showMessageDialog(null, "Attenzione, ordine effettuato con successo, ma con errori di aggiornamento del magazzino", "Attenzione", JOptionPane.WARNING_MESSAGE);
+								}else {
+									JOptionPane.showMessageDialog(null, "Ordine effettuato con successo!");
+								}
+							
 								context.removeAll();
 								context.repaint();
 								context.revalidate();
-								attach(context, psql, focusListener); // Ricrea istanza!
+								
+			                    new PanelMenu(1500, 900)
+			                    .build(context, new PanelMenuBuilderInterface() {
+			                       
+			                        @Override
+			                        public void attach(JPanel panel) {
+			                            new PanelOrderList().attach(panel, psql, focusListener);
+			                        }
+			                       
+			                    });
+								
 							}else {
 								JOptionPane.showMessageDialog(null, "Si è verificato un errore durante l'ordinazione", "Errore", JOptionPane.ERROR_MESSAGE);
 							}

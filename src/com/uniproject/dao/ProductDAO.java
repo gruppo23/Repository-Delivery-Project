@@ -130,6 +130,40 @@ public class ProductDAO extends EngineDAO implements InterfaceDAO<String, Void, 
 				
 			break;
 			
+			case 5:
+				prod = (List<Product>)generateQuerySelect()
+						.generateJoin(JoinTypes.INNER, " restaurant_product AS rp ", " ON p.id = rp.id_product")
+							.generateQueryWhere(" rp.id_restaurant =  '" + s[0] + "'" + " AND p.price between " + s[1] + " and " + s[2])
+								.endGenerateSelect(psql, product);
+			break;
+			
+            case 6:
+				
+				String first_sub_query_2 	= select(0);
+				String second_sub_query_2 = new AllergyProductDAO(new AllergyProduct()).select(0);
+				String third_sub_query_2 	= new AllergyCustomerDAO(new AllergyCustomer()).select(0) + "'" + s[0] + "'";
+				
+				prod = (List<Product>)
+				generateQuerySelect()
+					.generateJoin(JoinTypes.INNER, "restaurant_product as rp", " ON rp.id_product = p.id ")
+						.generateQueryWhere("p.id IN (" + 
+														first_sub_query_2
+														+ 
+														" EXCEPT "
+														+  
+														second_sub_query_2
+														+
+														"(" 
+														+
+														third_sub_query_2
+														+
+														")"
+														+
+														" GROUP BY ap.id "
+														+
+														") AND rp.id_restaurant = '"+s[1]+"' " + " AND p.price between " + s[2] + " and " + s[3])
+															.endGenerateSelect(psql, product);
+        	
 		}
 
 		return prod;

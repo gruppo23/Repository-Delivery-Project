@@ -102,12 +102,14 @@ public class EngineDAO {
 			String where = " WHERE ";
 			for(int index : validIndexWhere) {
 				fields[index].setAccessible(true);
-				where += fields[index].getName() + " = " + (fields[index].getType().getSimpleName().toString().equals("String") ? "'" + fields[index].get(genericDao) + "'" : fields[index].get(genericDao).toString()) + " AND";
+				where += fields[index].getName() + " = " + (fields[index].getType().getSimpleName().toString().equals("String") ? "'" + fields[index].get(genericDao) + "'" : fields[index].get(genericDao).toString()) + " AND ";
 			}
-			where = where.substring(0, where.length() - 3);
+			where = where.substring(0, where.length() - 4);
 			
 			// Completa query
 			QUERY += set + where;
+			
+			System.out.println(QUERY);
 			
 		}catch(Exception e) {
 			System.out.println("Errore generazione query: " + e); 

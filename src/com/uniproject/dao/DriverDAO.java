@@ -38,20 +38,44 @@ public class DriverDAO extends EngineDAO implements InterfaceDAO<Void, Void, Voi
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
 		List<Driver> drivers = null;
 		
-		if(delta == 0)
-			drivers = (List<Driver>)generateQuerySelect().endGenerateSelect(psql, new Driver());
-		else
-			drivers = (List<Driver>)generateQuerySelect()
-						.generateQueryWhere("")
-							.generateLike()
-								.endGenerateSelect(psql, new Driver());
+		switch(delta) {
+		
+			case 0:
+				drivers = (List<Driver>)generateQuerySelect().endGenerateSelect(psql, new Driver());
+			break;
+			
+			case 1:
+				drivers = (List<Driver>)generateQuerySelect()
+							.generateQueryWhere("")
+								.generateLike()
+									.endGenerateSelect(psql, new Driver());
+			break;
+			
+			case 2:
+				generateQuerySelect().generateQueryWhere(" dr.fiscal_code not in ");
+				QUERY += select(0).replaceAll("#", "'" + s[0] + "'");
+				drivers = (List<Driver>)endGenerateSelect(psql, new Driver());
+			break;
+		
+		}
 		
 		return drivers;
 	}
 
 	@Override
 	public String select(int delta) {
-		return null;
+		String query =  "(										";
+			   query += "select									";
+			   query += "id_driver from							";
+			   query += "(select								";
+			   query += "_do.id_driver,						    ";
+			   query += "count(_do.id_driver) as cnt			";
+			   query += "from delivery_order as _do				";
+			   query += "where _do.status = 0					";
+			   query += "group by _do.id_driver					";
+			   query += ") as sq where sq.cnt >= 3				";
+			   query += ") and dr.transport = #					";
+		return query;
 	}
 	
 }

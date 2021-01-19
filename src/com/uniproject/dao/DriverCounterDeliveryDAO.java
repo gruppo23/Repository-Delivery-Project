@@ -5,7 +5,7 @@ import java.util.List;
 import com.uniproject.entity.DriverCounterDelivery;
 import com.uniproject.jdbc.PostgreSQL;
 
-public class DriverCounterDeliveryDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, Void>{
+public class DriverCounterDeliveryDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
 	
 	public DriverCounterDeliveryDAO(Object model) {
 		super(model);
@@ -30,12 +30,13 @@ public class DriverCounterDeliveryDAO extends EngineDAO implements InterfaceDAO<
 	}
 
 	@Override
-	public List<?> select(int delta, PostgreSQL psql, Void... s) {
+	public List<?> select(int delta, PostgreSQL psql, String... s) {
 		generateQuerySelect()
 			.generateJoin(JoinTypes.LEFT, "delivery_order AS _do", " ON _dr.fiscal_code = _do.id_driver ")
-				.generateQueryWhere(" _do.status = 0 OR _do.status is null ")
+				.generateQueryWhere(" _dr.transport = '" + s[0] + "' AND _do.status = 0 ")
 					.generateQueryGroupBy(" _dr.fiscal_code ");
-		QUERY = QUERY.replace("_dr.ordini AS ordini", "COUNT(_dr.fiscal_code) AS ordini");
+		QUERY = QUERY.replace("_dr.ordini AS ordini", "(COUNT(_dr.fiscal_code) - 1) AS ordini");
+		System.out.println(QUERY);
 		return ((List<DriverCounterDelivery>) endGenerateSelect(psql, new DriverCounterDelivery()));
 	}
 
