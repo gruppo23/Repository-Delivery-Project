@@ -26,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
+import com.uni.analytics.Cartesian;
 import com.uni.panels.PanelAddAllergy;
 import com.uni.panels.PanelAddAllergyToCustomer;
 import com.uni.panels.PanelCustomer;
@@ -93,7 +94,6 @@ public class FrameMenu extends JFrame{
 		mapMenu.put("Clienti",    		new String[] { "Registra cliente",            "Lista clienti",    		   "Registra allergie cliente"               });
 		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",    		                                             });
 		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    			                                     	 });
-		mapMenu.put("Statistiche",    	new String[] { "Statistiche ristoranti",      "Statistiche clienti",        "Statistiche drivers" 	                 });
 
 		// Crea menu con sotto menu
 		for(Map.Entry<String, String[]> menu : mapMenu.entrySet()) {
@@ -176,6 +176,7 @@ public class FrameMenu extends JFrame{
 				
 				// Switch testo menu
 				switch(text) {
+				
 				
 					// ------------------
 					// -- Lista ordini --

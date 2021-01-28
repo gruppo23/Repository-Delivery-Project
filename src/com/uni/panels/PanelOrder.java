@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.uni.frame.Form;
 import com.uni.frame.PanelMenu;
 import com.uni.frame.PanelMenuBuilderInterface;
 import com.uniproject.dao.CustomerDAO;
@@ -291,7 +292,7 @@ public class PanelOrder implements PanelAttachInterface{
 							
 							Row row_sconto = new Row();
 							row_sconto.desc 	= "Sconto " + savedSconto;
-							//row_sconto.sconto 	= sct;
+							// row_sconto.sconto 	= sct;
 							row_sconto.tipology = 0;
 							
 							int index = Integer.parseInt(button_qta_sc.getClientProperty("index").toString()) + 1;
@@ -376,6 +377,7 @@ public class PanelOrder implements PanelAttachInterface{
 	private JButton btn_order_cliente;
 	private JButton btn_order_driver;
 	private JButton btn_order_save_order;
+	private JButton btn_filter_price;
 	
 	// Label
 	private JLabel lb_order_cliente;
@@ -388,8 +390,7 @@ public class PanelOrder implements PanelAttachInterface{
 	
 	// Checkbox
 	private JCheckBox check_order_filter_allergy;
-	private JCheckBox check_order_filter_price;
-	
+
 	// Oggetti grafici
 	private JTextField txtPriceMin;
 	private JTextField txtPriceMax;
@@ -411,6 +412,12 @@ public class PanelOrder implements PanelAttachInterface{
 	
 	// Codice fiscale cliente
 	private String fiscal_code_customer;
+
+	//[17:29] ALDO RODRIGUEZ
+	// Prezzi min e max
+	private String priceMin;
+	private String priceMax;
+
 	
 	// Liste
 	private List<Restaurant> restaurants;
@@ -441,8 +448,10 @@ public class PanelOrder implements PanelAttachInterface{
 	@SuppressWarnings("serial")
 	@Override
 	public void attach(JPanel context, PostgreSQL psql, FocusListener focusListener) {
-	
 		
+		// Form prezzi
+		Form form = new Form();
+	
 		// Lista dei ristoranti
 		restaurants   = (List<Restaurant>) new RestaurantDAO(new Restaurant()).select(0, psql);
 		customers     = (List<Customer>)   new CustomerDAO(new Customer()).select(0, psql);
@@ -591,7 +600,6 @@ public class PanelOrder implements PanelAttachInterface{
 		panel_order_cliente.setBounds(10, 302, 424, 64);
 		panel_order_cliente.setLayout(null);
 
-		//ALDO PROVE
 		lb_order_cliente = new JLabel("Cliente : ");
 		lb_order_cliente.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lb_order_cliente.setBounds(10, 11, 317, 42);
@@ -642,7 +650,7 @@ public class PanelOrder implements PanelAttachInterface{
 		                        indexProd++;
 		                    }
 		                    dtm_prod   = new DefaultTableModel(rows_prod, columns_prod);
-		                    //table_prod.addMouseListener(table_prod.getMouseListeners()[0]);
+		                    // table_prod.addMouseListener(table_prod.getMouseListeners()[0]);
 		                    table_prod.setModel(dtm_prod);
 		               
 		                     table_prod.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -799,7 +807,7 @@ public class PanelOrder implements PanelAttachInterface{
 					indexProd++;
 				}
 				dtm_prod   = new DefaultTableModel(rows_prod, columns_prod);
-				//table_prod.addMouseListener(table_prod.getMouseListeners()[0]);
+				// table_prod.addMouseListener(table_prod.getMouseListeners()[0]);
 				table_prod.setModel(dtm_prod);
 			
 				 table_prod.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -821,39 +829,89 @@ public class PanelOrder implements PanelAttachInterface{
 		
 		panel_order_filter_allergy.add(check_order_filter_allergy);
 
-		//INIZIO
+		// PANNELLO PER FILTRARE PER PREZZO
 		panel_order_filter_price = new JPanel();
 		panel_order_filter_price.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel_order_filter_price.setBounds(444, 345, 424, 64);
 		panel_order_filter_price.setLayout(null);
 		
-		check_order_filter_price = new JCheckBox(" Filtra prodotti per prezzo (MIN-MAX)");
-		check_order_filter_price.setEnabled(true);
-		check_order_filter_price.setFont(new Font("Tahoma", Font.BOLD, 14));
-		check_order_filter_price.setBounds(6, 7, 293, 50);
+		// FILTRA PRODOTTI PER PREZZO
+		btn_filter_price = new JButton("Filtra prodotti per prezzo");
+		btn_filter_price.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Controlla inserimento corretto dei campi
+				if(!form.validateValueForm()) {
+					JOptionPane.showMessageDialog(null, "Attenzione, validare i campi in modo corretto!", "Errore", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				priceMin = txtPriceMin.getText().replace(",", ".");
+				priceMax = txtPriceMax.getText().replace(",", ".");
+				
+				if(check_order_filter_allergy.isSelected()) 
+					products = (List<Product>) new ProductDAO(new Product()).select(6, psql, fiscal_code_customer, selectedCodeRestaurant, priceMin, priceMax);
+				else
+					products = (List<Product>) new ProductDAO(new Product()).select ( 5 , psql, selectedCodeRestaurant, priceMin, priceMax);
+					
+				// Nuove righe
+				String [] columns_prod      = { "Codice", "Nome", "Prezzo", "IVA" };
+				String [][] rows_prod       = new String[products.size()][4];
+				
+				int indexProd = 0;
+				for(Product prod : products) {
+					rows_prod[indexProd][0] = String.valueOf(prod.getId());
+					rows_prod[indexProd][1] = prod.getName();
+					rows_prod[indexProd][2] = String.valueOf(prod.getPrice());
+					rows_prod[indexProd][3] = String.valueOf(prod.getVat_number());
+					indexProd++;
+				}
+				dtm_prod   = new DefaultTableModel(rows_prod, columns_prod);
+				// table_prod.addMouseListener(table_prod.getMouseListeners()[0]);
+				table_prod.setModel(dtm_prod);
+			
+				 table_prod.getColumnModel().getColumn(0).setPreferredWidth(0);
+				 table_prod.getColumnModel().getColumn(1).setPreferredWidth(80);
+				 table_prod.getColumnModel().getColumn(2).setPreferredWidth(0);
+				 table_prod.getColumnModel().getColumn(3).setPreferredWidth(0);
+				
+				panel_order_product.removeAll();
+				JScrollPane scroll_table_prod = new JScrollPane(table_prod);
+				scroll_table_prod.setBounds(10, 40, 404, 200);
+				panel_order_product.add(scroll_table_prod);
+				panel_order_product.add(lb_order_products);
+				panel_order_product.repaint();
+					
+
+            }
+           
+        });
 		
+		btn_filter_price.setBounds(214,7,200,50);
+		panel_order_filter_price.add(btn_filter_price);
+
 		txtPriceMin = new JTextField();
-		txtPriceMin.setText("0");
+		txtPriceMin.setText("MIN");
 		txtPriceMin.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPriceMin.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtPriceMin.setBackground(SystemColor.menu);
-		txtPriceMin.setBounds(309, 10, 50, 45);
+		txtPriceMin.setBounds(6, 10, 97, 45);
 		txtPriceMin.addFocusListener(focusListener);
 		txtPriceMin.putClientProperty("tipology", "double");
 		panel_order_filter_price.add(txtPriceMin);
-		
+
 		txtPriceMax = new JTextField();
-		txtPriceMax.setText("1000");
+		txtPriceMax.setText("MAX");
 		txtPriceMax.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPriceMax.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtPriceMax.setBackground(SystemColor.menu);
-		txtPriceMax.setBounds(364, 10, 50, 45);
+		txtPriceMax.setBounds(113, 10, 97, 45);
 		txtPriceMax.addFocusListener(focusListener);
 		txtPriceMax.putClientProperty("tipology", "double");
 		panel_order_filter_price.add(txtPriceMax);
+
 		
-		panel_order_filter_price.add(check_order_filter_price);
-		//FINE
 		panel_order_product = new JPanel();
 		panel_order_product.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel_order_product.setBounds(444, 11, 425, 250);
@@ -868,13 +926,13 @@ public class PanelOrder implements PanelAttachInterface{
 		panel_order_restaurant.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel_order_restaurant.setBounds(10, 11, 424, 280);
 		
-		//ETICHETTA RISTORANTI
+		// ETICHETTA RISTORANTI
 		lb_order_restaurant = new JLabel("Seleziona un ristorante : ");
 		lb_order_restaurant.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lb_order_restaurant.setBounds(10,5,317,42);
 		panel_order_restaurant.add(lb_order_restaurant);
 		
-		//TABELLA RISTORANTI
+		// TABELLA RISTORANTI
 		JScrollPane scroll_table_rest = new JScrollPane(table_rest);
 		scroll_table_rest.setBounds(10, 40, 404, 200);
 		scroll_table_rest.setBorder(new EtchedBorder());
@@ -940,7 +998,7 @@ public class PanelOrder implements PanelAttachInterface{
 						model_product.id_product = row.id_prod;
 						model_product.quantity = row.quantity;
 						
-						// Controlla x ogni prodotto le quantità 
+						// Controlla per ogni prodotto le quantità 
 						ProductRestaurantQuantity prd =
 							(ProductRestaurantQuantity)
 								new ProductRestaurantQuantityDAO(new ProductRestaurantQuantity())
@@ -1073,6 +1131,10 @@ public class PanelOrder implements PanelAttachInterface{
 			}
 			
 		});
+		
+		// AGGIUNTA AL FORM
+		form.addToForm(txtPriceMin);
+		form.addToForm(txtPriceMax);
 		
 		context.add(panel_order_cliente);
 		context.add(panel_order_trasporto);
