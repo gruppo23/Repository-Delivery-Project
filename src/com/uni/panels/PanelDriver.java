@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.util.HashMap;
+
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -221,6 +221,9 @@ public class PanelDriver implements PanelAttachInterface{
 					
 					@Override
 					public void ok() {
+						comboGender.setSelectedIndex(0);
+						txtCitta.setSelectedIndex(0);
+						comboMezzo.setSelectedIndex(0);
 						form.clearField();
 						JOptionPane.showMessageDialog(null, "Driver inserito con successo!");
 					}

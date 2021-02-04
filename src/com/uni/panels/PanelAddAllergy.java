@@ -145,6 +145,8 @@ public class PanelAddAllergy implements PanelAttachInterface{
 				    	
 						@Override
 						public void ok() {
+							comboBoxAllergen.setSelectedIndex(0);
+							comboBoxNameProduct.setSelectedIndex(0);
 							form.clearField();
 							JOptionPane.showMessageDialog(null, "Inserimento avvenuto con successo!");
 						}

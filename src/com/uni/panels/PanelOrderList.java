@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,14 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.uniproject.entity.Customer;
 import com.uniproject.entity.DeliveryOrderQuantity;
 import com.uniproject.entity.Delivery_Order;
 import com.uniproject.dao.DeliveryOrderDao;
-import com.uniproject.dao.DeliveryOrderProductDAO;
 import com.uniproject.dao.DeliveryOrderQuantityDAO;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
-import com.uniproject.entity.Delivery_Order_Product;
 import com.uniproject.jdbc.PostgreSQL;
 
 
@@ -47,7 +43,7 @@ public class PanelOrderList {
 	// Righe tabella
 	private Object [][] rows;
 
-	// Tabellao
+	// Tabella
 	private JTable tableOrders;
 	
 	// Result callback

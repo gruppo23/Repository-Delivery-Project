@@ -9,10 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,7 +21,6 @@ import javax.swing.JTable;
 import com.uniproject.dao.DriverDAO;
 import com.uniproject.dao.InterfaceSuccessErrorDAO;
 import com.uniproject.entity.Driver;
-import com.uniproject.entity.Restaurant_Tipology;
 import com.uniproject.jdbc.PostgreSQL;
 
 public class PanelDriverList implements PanelAttachInterface{

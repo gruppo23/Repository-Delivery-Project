@@ -32,7 +32,7 @@ public class PanelRestaurantTipology implements PanelAttachInterface{
 		lbTipology.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		
 		JTextField fieldTipology = new JTextField();
-		fieldTipology.setBounds(10, 60, 400, 40);
+		fieldTipology.setBounds(10, 60, 450, 40);
 		fieldTipology.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		fieldTipology.addFocusListener(focusListener);
 		form.addToForm(fieldTipology); // Aggiungi a form
@@ -79,7 +79,8 @@ public class PanelRestaurantTipology implements PanelAttachInterface{
 						
 						@Override
 						public void ok() {
-							form.clearField();
+						   fieldDesc.setText(null);
+						   form.clearField();
 							JOptionPane.showMessageDialog(null, "Inserimento tipologia avvenuto con successo!");
 						}
 						

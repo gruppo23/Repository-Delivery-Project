@@ -257,6 +257,8 @@ public class PanelCustomer implements PanelAttachInterface{
 					public void ok() {
 						
 						modelListCheck.reset();
+						comboGender.setSelectedIndex(0);
+						txtCitta.setSelectedIndex(0);
 						
 						// Cliente è stato registrato, adesso registra le allergie
 						if(allergyCustomerRelationToSave.size()  == 0) {
@@ -282,7 +284,7 @@ public class PanelCustomer implements PanelAttachInterface{
 						if(theresErrorInsertRelation)
 							e = "Cliente inserito con successo! Tuttavia non è stato possibile registare tutte le allergie!";
 						else
-							e = "Cliente e allergie inserito con successo!";
+							e = "Cliente e allergie inseriti con successo!";
 						
 						JOptionPane.showMessageDialog(null, e, e.equals("") ? "Messaggio" : "Attenzione", !theresErrorInsertRelation ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
 						

@@ -241,6 +241,8 @@ public class PanelRestaurant implements PanelAttachInterface{
 						@Override
 						public void ok() {
 							form.clearField();
+							comboBoxTipology.setSelectedIndex(0);
+							comboVia.setSelectedIndex(0);
 							JOptionPane.showMessageDialog(null, "Inserimento tipologia avvenuto con successo!");
 						}
 						

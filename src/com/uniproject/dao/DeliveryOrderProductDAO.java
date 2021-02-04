@@ -2,8 +2,7 @@ package com.uniproject.dao;
 
 import java.util.List;
 
-import com.uniproject.entity.Delivery_Order_Product;
-import com.uniproject.entity.Driver;
+import com.uniproject.entity.DeliveryOrderProduct;
 import com.uniproject.jdbc.PostgreSQL;
 
 public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<Void, Void, Void, String>{
@@ -39,14 +38,14 @@ public class DeliveryOrderProductDAO extends EngineDAO implements InterfaceDAO<V
 	@Override
 	public List<?> select(int delta, PostgreSQL psql, String... s) {
 		
-		List<Delivery_Order_Product> orders = null;
+		List<DeliveryOrderProduct> orders = null;
 		if(delta == 0)
-			orders = (List<Delivery_Order_Product>)generateQuerySelect().endGenerateSelect(psql, new Delivery_Order_Product());
+			orders = (List<DeliveryOrderProduct>)generateQuerySelect().endGenerateSelect(psql, new DeliveryOrderProduct());
 		else
-			orders = (List<Delivery_Order_Product>)generateQuerySelect()
+			orders = (List<DeliveryOrderProduct>)generateQuerySelect()
 						.generateQueryWhere(" ")
 							.generateLike()
-								.endGenerateSelect(psql, new Delivery_Order_Product());
+								.endGenerateSelect(psql, new DeliveryOrderProduct());
 		
 		return orders;
 	}

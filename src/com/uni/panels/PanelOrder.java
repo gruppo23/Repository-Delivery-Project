@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.ErrorManager;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -43,7 +42,7 @@ import com.uniproject.dao.RestaurantDAO;
 import com.uniproject.dao.Restaurant_ProductDAO;
 import com.uniproject.entity.Customer;
 import com.uniproject.entity.Delivery_Order;
-import com.uniproject.entity.Delivery_Order_Product;
+import com.uniproject.entity.DeliveryOrderProduct;
 import com.uniproject.entity.Driver;
 import com.uniproject.entity.Product;
 import com.uniproject.entity.ProductRestaurantQuantity;
@@ -143,10 +142,10 @@ public class PanelOrder implements PanelAttachInterface{
 				
 				String restaurant = selectedCodeRestaurant;
 				
-				Row row 			= new Row();
+				Row row 		= new Row();
 				row.id_prod    		= Integer.parseInt(table_prod.getValueAt(table_prod.getSelectedRow(), 0).toString());
-				row.desc 	   		= table_prod.getValueAt(table_prod.getSelectedRow(), 1).toString();
-				row.price 	   		= Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 2).toString());
+				row.desc 	   	= table_prod.getValueAt(table_prod.getSelectedRow(), 1).toString();
+				row.price 	   	= Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 2).toString());
 				row.vat_number 		= Double.parseDouble(table_prod.getValueAt(table_prod.getSelectedRow(), 3).toString());
 				row.quantity   		= 1;
 				row.tipology   		= 1;
@@ -413,7 +412,6 @@ public class PanelOrder implements PanelAttachInterface{
 	// Codice fiscale cliente
 	private String fiscal_code_customer;
 
-	//[17:29] ALDO RODRIGUEZ
 	// Prezzi min e max
 	private String priceMin;
 	private String priceMax;
@@ -1052,7 +1050,7 @@ public class PanelOrder implements PanelAttachInterface{
 							
 							for(ModelProduct modelProduct : modelVendita.products) {
 								
-								Delivery_Order_Product deliveryOrderProduct = new Delivery_Order_Product();
+								DeliveryOrderProduct deliveryOrderProduct = new DeliveryOrderProduct();
 								deliveryOrderProduct.setId_order(id);
 								deliveryOrderProduct.setId_product(modelProduct.id_product);
 								deliveryOrderProduct.setQuantity(modelProduct.quantity);

@@ -3,7 +3,6 @@ package com.uniproject.dao;
 import java.util.List;
 
 import com.uniproject.entity.Delivery_Order;
-import com.uniproject.entity.Delivery_Order_Product;
 import com.uniproject.jdbc.PostgreSQL;
 
 public class DeliveryOrderDao extends EngineDAO implements InterfaceDAO<Void, Void, Void, String> {
@@ -61,6 +60,22 @@ public class DeliveryOrderDao extends EngineDAO implements InterfaceDAO<Void, Vo
 				deliveryOrders = (List<Delivery_Order>) endGenerateSelect(psql, new Delivery_Order());
 			break;
 			
+			
+			//Case 3 e 4 per gli ordini confermati
+			case 3:
+				deliveryOrders = (List<Delivery_Order>)generateQuerySelect().generateQueryWhere("_do.status = 1").endGenerateSelect(psql, new Delivery_Order());
+			break;
+			
+			case 4:
+				generateQuerySelect();
+				generateQueryWhere(" ");
+				QUERY += "(";
+				generateLike();
+				QUERY += ") AND _do.status = 1";
+				QUERY = QUERY.replace("OR(status::text LIKE '%"+s[0]+"%')", "");
+				System.out.println(QUERY);
+				deliveryOrders = (List<Delivery_Order>) endGenerateSelect(psql, new Delivery_Order());
+			break;
 		}
 		
 

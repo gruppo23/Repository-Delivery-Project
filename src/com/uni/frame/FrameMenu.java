@@ -26,7 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import com.uni.analytics.Cartesian;
+
 import com.uni.panels.PanelAddAllergy;
 import com.uni.panels.PanelAddAllergyToCustomer;
 import com.uni.panels.PanelCustomer;
@@ -35,6 +35,7 @@ import com.uni.panels.PanelDriver;
 import com.uni.panels.PanelDriverList;
 import com.uni.panels.PanelListRestaurant;
 import com.uni.panels.PanelOrder;
+import com.uni.panels.PanelOrderCompletedList;
 import com.uni.panels.PanelOrderList;
 import com.uni.panels.PanelProduct;
 import com.uni.panels.PanelRestaurant;
@@ -92,8 +93,8 @@ public class FrameMenu extends JFrame{
 		mapMenu.put("Ristoranti", 		new String[] { "Registra ristorante",         "Lista ristoranti", 		   "Registra tipologia ristorante" 	         });
 		mapMenu.put("Prodotti",   		new String[] { "Registra prodotto",           "Registra allergie alimenti"      		     						 });
 		mapMenu.put("Clienti",    		new String[] { "Registra cliente",            "Lista clienti",    		   "Registra allergie cliente"               });
-		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",    		                                             });
-		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers",    			                                     	 });
+		mapMenu.put("Ordine",    		new String[] { "Registra ordine",             "Lista ordini",              "Ordini completati"		                                             });
+		mapMenu.put("Drivers",    		new String[] { "Registra drivers",            "Lista drivers"    			                                     	 });
 
 		// Crea menu con sotto menu
 		for(Map.Entry<String, String[]> menu : mapMenu.entrySet()) {
@@ -186,7 +187,7 @@ public class FrameMenu extends JFrame{
 	                    // Pulizia form
 	                    form.clearForm();
 	                   
-	                    // Interfaccia creazione ristorante
+	                    // Interfaccia lista ordini
 	                    new PanelMenu(1500, 900)
 	                    .build(content, new PanelMenuBuilderInterface() {
 	                       
@@ -198,6 +199,28 @@ public class FrameMenu extends JFrame{
 	                    });
 						
 					break;
+					
+					// ---------------------------------
+					// ---- Lista ordini completati ----
+					// ---------------------------------
+					case "Ordini completati":
+						
+	                    // Pulizia form
+	                    form.clearForm();
+	                   
+	                    // Interfaccia ordini completati
+	                    new PanelMenu(1500, 900)
+	                    .build(content, new PanelMenuBuilderInterface() {
+	                       
+	                        @Override
+	                        public void attach(JPanel panel) {
+	                            new PanelOrderCompletedList().attach(panel, psql, focusListener);
+	                        }
+	                       
+	                    });
+						
+					break;
+					
 					
 					// ---------------------
 					// -- Registra ordine --
